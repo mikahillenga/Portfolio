@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CGI-oefenomgeving — Portfolio Oriënterende Stage</title>
+  <meta name="description" content="Oefenomgeving om je portfolio voor te bereiden op een Criterium Gericht Interview (CGI)." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">CGI</span>
+        <div class="brand-text">
+          <h1>CGI-oefenomgeving</h1>
+          <p>Portfolio Oriënterende Stage · <span id="studentNaam"></span></p>
+        </div>
+      </div>
+      <nav class="top-nav" aria-label="Hoofdnavigatie">
+        <button class="nav-btn is-active" data-view="home">Start</button>
+        <button class="nav-btn" data-view="oefenen">Oefenen</button>
+        <button class="nav-btn" data-view="simulatie">CGI-simulatie</button>
+        <button class="nav-btn" data-view="spiekbriefje">Spiekbriefje</button>
+        <button class="nav-btn" data-view="voortgang">Voortgang</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="app-main" id="appMain">
+
+    <!-- ===================== HOME ===================== -->
+    <section class="view" id="view-home">
+      <div class="hero">
+        <h2>Bereid je portfolio voor zoals in een echt CGI</h2>
+        <p class="hero-lead">
+          Een Criterium Gericht Interview (CGI) is een gesprek waarin je assessor toetst of je de
+          leeruitkomsten écht beheerst. Hij of zij vraagt door, vraagt om concrete voorbeelden en
+          checkt of het werk van jou is. Met deze omgeving oefen je dat gesprek: per leeruitkomst,
+          met realistische vragen en met modelpunten uit je eigen portfolio.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-view="oefenen">Begin met oefenen</button>
+          <button class="btn btn-ghost" data-view="simulatie">Start een CGI-simulatie</button>
+        </div>
+      </div>
+
+      <div class="card-grid" id="homeLolGrid"><!-- LOL-kaarten via JS --></div>
+
+      <div class="info-block">
+        <h3>Hoe werkt het?</h3>
+        <ol class="steps">
+          <li><strong>Lees de vraag</strong> en beantwoord hardop (of typ je antwoord) volgens STARR.</li>
+          <li><strong>Vergelijk</strong> daarna met de modelpunten: welke punten miste je?</li>
+          <li><strong>Beoordeel jezelf</strong> (onvoldoende / voldoende / goed). Je voortgang wordt bewaard in je browser.</li>
+          <li><strong>Train onder druk</strong> met de CGI-simulatie: willekeurige vragen met een timer.</li>
+        </ol>
+      </div>
+
+      <div class="info-block tips-block">
+        <h3>Tips voor je CGI</h3>
+        <ul class="tips" id="cgiTipsList"><!-- via JS --></ul>
+      </div>
+    </section>
+
+    <!-- ===================== OEFENEN ===================== -->
+    <section class="view is-hidden" id="view-oefenen">
+      <div class="toolbar">
+        <div class="toolbar-group">
+          <label for="filterLol">Leeruitkomst</label>
+          <select id="filterLol"></select>
+        </div>
+        <div class="toolbar-group">
+          <label for="filterType">Vraagtype</label>
+          <select id="filterType">
+            <option value="all">Alle types</option>
+            <option value="open">Openingsvragen</option>
+            <option value="doorvraag">Doorvragen</option>
+            <option value="kritisch">Kritische vragen</option>
+          </select>
+        </div>
+        <div class="toolbar-group toolbar-spacer">
+          <button class="btn btn-small" id="btnRandom">🎲 Willekeurige vraag</button>
+        </div>
+      </div>
+
+      <div id="oefenContainer"><!-- vraagkaarten via JS --></div>
+    </section>
+
+    <!-- ===================== SIMULATIE ===================== -->
+    <section class="view is-hidden" id="view-simulatie">
+      <div id="simSetup" class="sim-setup">
+        <h2>CGI-simulatie</h2>
+        <p class="muted">
+          Je krijgt een reeks willekeurige vragen verspreid over de leeruitkomsten, met een lopende timer —
+          net als in een echt gesprek. Beantwoord eerst zelf, klap dan de modelpunten uit en beoordeel jezelf.
+        </p>
+        <div class="sim-options">
+          <div class="toolbar-group">
+            <label for="simAantal">Aantal vragen</label>
+            <select id="simAantal">
+              <option value="5">5 vragen (kort)</option>
+              <option value="8" selected>8 vragen (gemiddeld)</option>
+              <option value="12">12 vragen (volledig)</option>
+            </select>
+          </div>
+          <div class="toolbar-group">
+            <label for="simScope">Selectie</label>
+            <select id="simScope">
+              <option value="mix">Mix van alle types</option>
+              <option value="open">Vooral openingsvragen</option>
+              <option value="kritisch">Vooral kritische/doorvragen (zwaar)</option>
+            </select>
+          </div>
+          <div class="toolbar-group">
+            <label for="simLol">Beperk tot</label>
+            <select id="simLol"></select>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="btnStartSim">Start simulatie</button>
+      </div>
+
+      <div id="simRun" class="sim-run is-hidden">
+        <div class="sim-bar">
+          <div class="sim-progress">Vraag <span id="simIndex">1</span> / <span id="simTotal">8</span></div>
+          <div class="sim-timer" id="simTimer">00:00</div>
+          <button class="btn btn-small btn-ghost" id="btnStopSim">Stoppen</button>
+        </div>
+        <div class="sim-progress-track"><div class="sim-progress-fill" id="simFill"></div></div>
+        <div id="simQuestionSlot"><!-- huidige vraag via JS --></div>
+        <div class="sim-nav">
+          <button class="btn btn-ghost" id="btnSimPrev">← Vorige</button>
+          <button class="btn btn-primary" id="btnSimNext">Volgende →</button>
+        </div>
+      </div>
+
+      <div id="simResult" class="sim-result is-hidden"><!-- samenvatting via JS --></div>
+    </section>
+
+    <!-- ===================== SPIEKBRIEFJE ===================== -->
+    <section class="view is-hidden" id="view-spiekbriefje">
+      <h2>Spiekbriefje — kerncijfers en feiten</h2>
+      <p class="muted">Test of je dit uit je hoofd kent. In een CGI maakt vlot je cijfers en methoden noemen een sterke indruk.</p>
+      <div class="fact-grid" id="factGrid"><!-- via JS --></div>
+    </section>
+
+    <!-- ===================== VOORTGANG ===================== -->
+    <section class="view is-hidden" id="view-voortgang">
+      <h2>Je voortgang</h2>
+      <p class="muted">Per leeruitkomst zie je hoeveel vragen je hebt geoefend en hoe je jezelf beoordeelde. Opgeslagen in deze browser.</p>
+      <div id="voortgangContainer"><!-- via JS --></div>
+      <div class="danger-zone">
+        <button class="btn btn-small btn-danger" id="btnReset">Voortgang wissen</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>Oefenomgeving op basis van het ingeleverde portfolio. Je antwoorden en beoordelingen blijven lokaal in je browser (niets wordt verstuurd).</p>
+  </footer>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
