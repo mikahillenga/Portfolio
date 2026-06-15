@@ -321,6 +321,7 @@
     if (view) view.classList.remove("is-hidden");
     $$(".nav-btn").forEach(b => b.classList.toggle("is-active", b.dataset.view === name));
     window.scrollTo({ top: 0, behavior: "smooth" });
+    if (name === "flashcards") renderFlashcards();
     if (name === "spiekbriefje") renderFacts();
     if (name === "voortgang") renderVoortgang();
     if (name === "beoordeling") renderBeoordeling();
@@ -498,6 +499,122 @@
       return;
     }
     list.forEach(q => cont.appendChild(questionCard(q)));
+  }
+
+  /* ===================================================================
+     FLASHCARDS
+  =================================================================== */
+  let flashDeck = [];
+  let flashIdx = 0;
+  let flashFlipped = false;
+  let flashCardEl = null;
+
+  function buildFlashDeck() {
+    const lol = $("#flashLol").value;
+    const type = $("#flashType").value;
+    const hide = $("#flashHideKnown").checked;
+    flashDeck = DATA.vragen.filter(q =>
+      (lol === "all" || q.lol === lol) &&
+      (type === "all" || q.type === type) &&
+      (!hide || !(store[q.id] && store[q.id].known))
+    );
+  }
+
+  function renderFlashcards() {
+    buildFlashDeck();
+    if (flashIdx >= flashDeck.length) flashIdx = 0;
+    showFlashCard();
+  }
+
+  function showFlashCard() {
+    const stage = $("#flashStage");
+    stage.innerHTML = "";
+    flashFlipped = false;
+    const flipBtn = $("#flashFlip");
+
+    if (!flashDeck.length) {
+      stage.appendChild(el("div", "empty", "Geen kaarten voor deze selectie. Pas je filter aan of zet 'Verberg gekende' uit."));
+      flipBtn.disabled = true;
+      updateFlashProgress();
+      return;
+    }
+    flipBtn.disabled = false;
+    flipBtn.textContent = "Toon antwoord";
+
+    const q = flashDeck[flashIdx];
+    const card = el("div", "flashcard");
+    const inner = el("div", "flashcard-inner");
+
+    const tags =
+      '<div class="flash-tags">' +
+        '<span class="tag tag-lol" style="background:' + lolColor(q.lol) + '">' + esc(lolLabel(q.lol)) + '</span>' +
+        '<span class="tag tag-' + q.type + '">' + esc(DATA.types[q.type].label) + '</span>' +
+      '</div>';
+
+    const front = el("div", "flash-face flash-front",
+      tags +
+      '<div class="flash-q">' + esc(q.vraag) + '</div>' +
+      '<div class="flash-hint">💭 Beantwoord eerst zelf — klik op de kaart voor het sterke antwoord.</div>');
+
+    let bb = '<div class="flash-back-label">Sterk antwoord bevat</div><ul class="flash-points">';
+    q.modelpunten.forEach(m => { bb += '<li>' + esc(m) + '</li>'; });
+    bb += '</ul>';
+    if (q.koppeling) bb += '<div class="flash-koppeling">' + esc(q.koppeling) + '</div>';
+    const back = el("div", "flash-face flash-back", bb);
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    card.appendChild(inner);
+    card.addEventListener("click", toggleFlip);
+    stage.appendChild(card);
+    flashCardEl = card;
+
+    updateFlashProgress();
+  }
+
+  function toggleFlip() {
+    if (!flashDeck.length) return;
+    flashFlipped = !flashFlipped;
+    if (flashCardEl) flashCardEl.classList.toggle("flipped", flashFlipped);
+    $("#flashFlip").textContent = flashFlipped ? "Verberg antwoord" : "Toon antwoord";
+  }
+
+  function flashNext() { if (flashDeck.length) { flashIdx = (flashIdx + 1) % flashDeck.length; showFlashCard(); } }
+  function flashPrev() { if (flashDeck.length) { flashIdx = (flashIdx - 1 + flashDeck.length) % flashDeck.length; showFlashCard(); } }
+
+  function flashMark(known) {
+    if (!flashDeck.length) return;
+    const q = flashDeck[flashIdx];
+    getEntry(q.id).known = known;
+    saveStore(store);
+    if (known && $("#flashHideKnown").checked) {
+      // kaart valt uit de deck: opnieuw opbouwen en op dezelfde plek blijven
+      buildFlashDeck();
+      if (flashIdx >= flashDeck.length) flashIdx = 0;
+      showFlashCard();
+    } else if (known) {
+      flashNext();
+    } else {
+      updateFlashProgress();
+    }
+  }
+
+  function updateFlashProgress() {
+    const prog = $("#flashProgress");
+    const deckLol = $("#flashLol").value;
+    const all = DATA.vragen.filter(q => deckLol === "all" || q.lol === deckLol);
+    const known = all.filter(q => store[q.id] && store[q.id].known).length;
+    if (!flashDeck.length) { prog.textContent = "0 kaarten · " + known + " van " + all.length + " gemarkeerd als gekend"; return; }
+    prog.textContent = "Kaart " + (flashIdx + 1) + " / " + flashDeck.length + " · " + known + " van " + all.length + " gemarkeerd als gekend";
+  }
+
+  function flashKeydown(e) {
+    if ($("#view-flashcards").classList.contains("is-hidden")) return;
+    const t = e.target.tagName;
+    if (t === "INPUT" || t === "TEXTAREA" || t === "SELECT") return;
+    if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggleFlip(); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); flashNext(); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); flashPrev(); }
   }
 
   /* ===================================================================
@@ -996,6 +1113,19 @@
       cont.appendChild(questionCard(q));
     });
     renderOefen();
+
+    // flashcards
+    buildLolSelect($("#flashLol"), true, true);
+    $("#flashLol").addEventListener("change", () => { flashIdx = 0; renderFlashcards(); });
+    $("#flashType").addEventListener("change", () => { flashIdx = 0; renderFlashcards(); });
+    $("#flashHideKnown").addEventListener("change", () => { flashIdx = 0; renderFlashcards(); });
+    $("#flashShuffle").addEventListener("click", () => { flashDeck = shuffle(flashDeck); flashIdx = 0; showFlashCard(); });
+    $("#flashFlip").addEventListener("click", toggleFlip);
+    $("#flashNext").addEventListener("click", flashNext);
+    $("#flashPrev").addEventListener("click", flashPrev);
+    $("#flashKnown").addEventListener("click", () => flashMark(true));
+    $("#flashAgain").addEventListener("click", () => flashMark(false));
+    document.addEventListener("keydown", flashKeydown);
 
     $("#btnPdf").addEventListener("click", downloadPdf);
     $("#btnStartSim").addEventListener("click", startSim);

@@ -20,6 +20,7 @@
       <nav class="top-nav" aria-label="Hoofdnavigatie">
         <button class="nav-btn is-active" data-view="home">Start</button>
         <button class="nav-btn" data-view="oefenen">Oefenen</button>
+        <button class="nav-btn" data-view="flashcards">Flashcards</button>
         <button class="nav-btn" data-view="simulatie">CGI-simulatie</button>
         <button class="nav-btn" data-view="beoordeling">CGI-beoordeling</button>
         <button class="nav-btn" data-view="spiekbriefje">Spiekbriefje</button>
@@ -143,6 +144,47 @@
       </div>
 
       <div id="oefenContainer"><!-- vraagkaarten via JS --></div>
+    </section>
+
+    <!-- ===================== FLASHCARDS ===================== -->
+    <section class="view is-hidden" id="view-flashcards">
+      <div class="toolbar">
+        <div class="toolbar-group">
+          <label for="flashLol">Leeruitkomst</label>
+          <select id="flashLol"></select>
+        </div>
+        <div class="toolbar-group">
+          <label for="flashType">Vraagtype</label>
+          <select id="flashType">
+            <option value="all">Alle types</option>
+            <option value="open">Openingsvragen</option>
+            <option value="doorvraag">Doorvragen</option>
+            <option value="kritisch">Kritische vragen</option>
+          </select>
+        </div>
+        <div class="toolbar-group">
+          <label>Filter</label>
+          <label class="check-inline"><input type="checkbox" id="flashHideKnown" /> Verberg gekende</label>
+        </div>
+        <div class="toolbar-group toolbar-spacer">
+          <button class="btn btn-small" id="flashShuffle">🔀 Schud</button>
+        </div>
+      </div>
+
+      <p class="muted flash-intro">Lees de vraag, beantwoord 'm eerst hardop, en klik op de kaart om het sterke antwoord te zien. Markeer daarna of je 'm kende.</p>
+
+      <div id="flashStage"><!-- kaart via JS --></div>
+
+      <div class="flash-controls">
+        <button class="btn btn-ghost" id="flashPrev">← Vorige</button>
+        <button class="btn btn-primary" id="flashFlip">Toon antwoord</button>
+        <button class="btn btn-ghost" id="flashNext">Volgende →</button>
+      </div>
+      <div class="flash-mark">
+        <button class="btn btn-small flash-again" id="flashAgain">↻ Nog oefenen</button>
+        <button class="btn btn-small flash-known" id="flashKnown">✓ Ken ik</button>
+      </div>
+      <div class="flash-progress muted" id="flashProgress"></div>
     </section>
 
     <!-- ===================== SIMULATIE ===================== -->
