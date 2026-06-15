@@ -24,11 +24,66 @@
         <button class="nav-btn" data-view="beoordeling">CGI-beoordeling</button>
         <button class="nav-btn" data-view="spiekbriefje">Spiekbriefje</button>
         <button class="nav-btn" data-view="voortgang">Voortgang</button>
+        <button class="nav-btn nav-gear" id="btnSttToggle" title="Transcriptie-instellingen (spraak → tekst)">⚙ Whisper</button>
       </nav>
     </div>
   </header>
 
   <main class="app-main" id="appMain">
+
+    <!-- ===================== TRANSCRIPTIE-INSTELLINGEN ===================== -->
+    <div class="stt-panel is-hidden" id="sttPanel">
+      <div class="stt-inner">
+        <div class="stt-top">
+          <h3>⚙ Transcriptie-instellingen <span class="stt-pill" id="sttActivePill">Actief: browser</span></h3>
+          <button class="stt-close" id="sttClose" title="Sluiten">✕</button>
+        </div>
+        <p class="muted">Kies hoe je gesproken antwoord naar tekst wordt omgezet. Heb je <b>Whisper</b> op je laptop draaien, kies dan “Lokale Whisper” voor accuratere transcriptie.</p>
+
+        <div class="stt-engines">
+          <label><input type="radio" name="sttEngine" value="browser" /> <b>Browser</b> (Web Speech API) — werkt direct in Chrome/Edge, geen installatie</label>
+          <label><input type="radio" name="sttEngine" value="whisper" /> <b>Lokale Whisper</b> — gebruikt het Whisper-model op je eigen laptop</label>
+        </div>
+
+        <div id="sttWhisperOpts" class="stt-whisper">
+          <div class="stt-grid">
+            <div class="stt-field">
+              <label for="sttFormat">Server-type</label>
+              <select id="sttFormat">
+                <option value="openai">OpenAI-compatible (/v1/audio/transcriptions)</option>
+                <option value="whispercpp">whisper.cpp server (/inference)</option>
+                <option value="asr">whisper-asr-webservice (/asr)</option>
+              </select>
+            </div>
+            <div class="stt-field stt-wide">
+              <label for="sttUrl">Endpoint-URL</label>
+              <input id="sttUrl" type="text" spellcheck="false" placeholder="http://127.0.0.1:8000/v1/audio/transcriptions" />
+            </div>
+            <div class="stt-field">
+              <label for="sttLang">Taal</label>
+              <input id="sttLang" type="text" value="nl" />
+            </div>
+            <div class="stt-field">
+              <label for="sttModel">Model (optioneel)</label>
+              <input id="sttModel" type="text" value="base" />
+            </div>
+          </div>
+          <div class="stt-actions">
+            <button class="btn btn-small btn-ghost" id="sttTest">Test verbinding</button>
+            <span id="sttTestResult" class="muted"></span>
+          </div>
+          <details class="stt-help">
+            <summary>Hoe zet ik mijn lokale Whisper aan?</summary>
+            <div class="stt-help-body">
+              <p><b>Snelste manier</b> — gebruik het meegeleverde bruggetje (gebruikt jouw eigen Whisper-model, geen extra downloads):</p>
+              <pre>python tools/whisper_server.py --model base --port 8000</pre>
+              <p>Zet hierboven het server-type op <b>OpenAI-compatible</b> en de URL op <code>http://127.0.0.1:8000/v1/audio/transcriptions</code>. Klik daarna op “Test verbinding”.</p>
+              <p class="muted">Tip: open deze pagina via <code>http://localhost</code> (bijv. <code>python -m http.server</code>) — de microfoon werkt alleen in een beveiligde context. Heb je al een <code>whisper.cpp</code>- of <code>whisper-asr-webservice</code>-server? Kies dan dat server-type en vul de juiste URL in.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
 
     <!-- ===================== HOME ===================== -->
     <section class="view" id="view-home">

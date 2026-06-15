@@ -49,6 +49,29 @@ Bij elke vraag staan twee knoppen:
 > kun je gewoon typen; voorlezen werkt vrijwel overal. In de CGI-simulatie kun je vragen ook automatisch
 > laten voorlezen via het vinkje **spreekmodus**.
 
+### Lokale Whisper gebruiken (nauwkeuriger)
+
+Heb je **Whisper** op je laptop staan? Dan kun je dat model gebruiken voor de transcriptie in plaats van de
+browser. Klik rechtsboven op **⚙ Whisper** en kies *Lokale Whisper*. De app neemt je antwoord op, zet het om
+naar 16 kHz mono WAV en stuurt het naar je lokale Whisper-endpoint; de tekst komt terug in het antwoordveld.
+
+**Snelste manier** — start het meegeleverde bruggetje (gebruikt jouw eigen Whisper-model, geen extra downloads):
+
+```bash
+# in de projectmap
+python tools/whisper_server.py --model base --port 8000
+```
+
+Zet in de app het server-type op **OpenAI-compatible** en de URL op
+`http://127.0.0.1:8000/v1/audio/transcriptions`, en klik op **Test verbinding**.
+
+- Het bruggetje werkt met **`faster-whisper`** (aanbevolen) of het **`openai-whisper`**-pakket dat je al hebt.
+  Het leest de WAV met de Python-standaardbibliotheek, dus **ffmpeg is niet nodig**.
+- Open de pagina via **`http://localhost`** (bijv. `python -m http.server` in de projectmap) — de microfoon
+  werkt alleen in een beveiligde context, en localhost telt als veilig.
+- Heb je al een **`whisper.cpp`**-server (`/inference`) of **`whisper-asr-webservice`** (`/asr`) draaien? Kies dan
+  dat server-type en vul de bijbehorende URL in. De app ondersteunt alle drie.
+
 ## PDF-rapport
 
 Op **CGI-beoordeling** staat **🖨️ Download als PDF**. Die opent de printdialoog van je browser; kies daar
@@ -70,8 +93,9 @@ opdracht A en de beschrijvende opdrachten I, J, K, L, M, N en T).
 ## Bestanden
 
 ```
-index.html   structuur + navigatie
-styles.css   vormgeving
-data.js      vragenbank, modelpunten en spiekbriefje (pas dit aan)
-app.js       logica (oefenen, simulatie, voortgang)
+index.html              structuur + navigatie
+styles.css              vormgeving
+data.js                 vragenbank, modelpunten, spiekbriefje en rubric (pas dit aan)
+app.js                  logica (oefenen, simulatie, beoordeling, spraak, PDF)
+tools/whisper_server.py  optioneel lokaal Whisper-bruggetje (spraak → tekst)
 ```

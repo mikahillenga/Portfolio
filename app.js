@@ -58,8 +58,23 @@
   /* ---------- spraak: voorlezen (TTS) + herkenning (STT) ---------- */
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
   const synth = window.speechSynthesis || null;
-  let activeRec = null;        // lopende SpeechRecognition
+  let activeRec = null;        // lopende SpeechRecognition (browser)
+  let activeRecorder = null;   // lopende MediaRecorder (Whisper)
   let dutchVoice = undefined;  // gecachte NL-stem
+
+  /* ---------- transcriptie-instellingen (browser of lokale Whisper) ---------- */
+  const STT_KEY = "cgi-stt-v1";
+  const STT_PRESETS = {
+    openai:     { url: "http://127.0.0.1:8000/v1/audio/transcriptions", label: "OpenAI-compatible (/v1/audio/transcriptions)" },
+    whispercpp: { url: "http://127.0.0.1:8080/inference",               label: "whisper.cpp server (/inference)" },
+    asr:        { url: "http://127.0.0.1:9000/asr",                     label: "whisper-asr-webservice (/asr)" }
+  };
+  const sttDefault = { engine: "browser", format: "openai", url: STT_PRESETS.openai.url, lang: "nl", model: "base" };
+  let sttSettings = (function () {
+    try { return Object.assign({}, sttDefault, JSON.parse(localStorage.getItem(STT_KEY)) || {}); }
+    catch (e) { return Object.assign({}, sttDefault); }
+  })();
+  function saveStt() { try { localStorage.setItem(STT_KEY, JSON.stringify(sttSettings)); } catch (e) {} }
 
   function pickDutchVoice() {
     if (!synth) return null;
@@ -90,6 +105,118 @@
   function stopRecognition() {
     if (activeRec) { try { activeRec.stop(); } catch (e) {} activeRec = null; }
   }
+  function stopRecorder() {
+    if (activeRecorder) { try { activeRecorder.stop(); } catch (e) {} activeRecorder = null; }
+  }
+  function stopAllCapture() { stopRecognition(); stopRecorder(); }
+
+  /* Zet opgenomen audio om naar 16kHz mono WAV — universeel leesbaar voor Whisper. */
+  async function blobToWav16k(blob) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) throw new Error("AudioContext niet beschikbaar");
+    const arr = await blob.arrayBuffer();
+    const tmp = new AC();
+    const decoded = await tmp.decodeAudioData(arr);
+    if (tmp.close) tmp.close();
+    const rate = 16000;
+    const off = new OfflineAudioContext(1, Math.max(1, Math.ceil(decoded.duration * rate)), rate);
+    const src = off.createBufferSource();
+    src.buffer = decoded;           // multi-channel wordt automatisch naar mono gemengd
+    src.connect(off.destination);
+    src.start(0);
+    const rendered = await off.startRendering();
+    return encodeWav(rendered.getChannelData(0), rate);
+  }
+  function encodeWav(samples, rate) {
+    const buf = new ArrayBuffer(44 + samples.length * 2);
+    const v = new DataView(buf);
+    const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+    w(0, "RIFF"); v.setUint32(4, 36 + samples.length * 2, true); w(8, "WAVE"); w(12, "fmt ");
+    v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, rate, true); v.setUint32(28, rate * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+    w(36, "data"); v.setUint32(40, samples.length * 2, true);
+    let o = 44;
+    for (let i = 0; i < samples.length; i++) {
+      let x = Math.max(-1, Math.min(1, samples[i]));
+      v.setInt16(o, x < 0 ? x * 0x8000 : x * 0x7FFF, true); o += 2;
+    }
+    return new Blob([buf], { type: "audio/wav" });
+  }
+  function addParam(url, k, val) { return url + (url.indexOf("?") < 0 ? "?" : "&") + k + "=" + encodeURIComponent(val); }
+
+  /* Stuurt audio naar de lokale Whisper-server en geeft de transcriptie terug. */
+  async function transcribeViaWhisper(blob) {
+    const s = sttSettings;
+    let sendBlob = blob, filename = "speech.webm";
+    try { sendBlob = await blobToWav16k(blob); filename = "speech.wav"; } catch (e) { /* val terug op ruwe opname */ }
+
+    const fd = new FormData();
+    let url = s.url;
+    if (s.format === "asr") {
+      fd.append("audio_file", sendBlob, filename);
+      url = addParam(url, "output", "json");
+      if (s.lang) url = addParam(url, "language", s.lang);
+    } else if (s.format === "whispercpp") {
+      fd.append("file", sendBlob, filename);
+      fd.append("response_format", "json");
+      if (s.lang) fd.append("language", s.lang);
+    } else { // openai-compatible
+      fd.append("file", sendBlob, filename);
+      fd.append("model", s.model || "whisper-1");
+      fd.append("response_format", "json");
+      if (s.lang) fd.append("language", s.lang);
+    }
+
+    const res = await fetch(url, { method: "POST", body: fd });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const ct = res.headers.get("content-type") || "";
+    if (ct.indexOf("application/json") >= 0) {
+      const j = await res.json();
+      return ((j && (j.text || j.transcription)) || "").trim();
+    }
+    return (await res.text()).trim();
+  }
+
+  /* Opnemen + transcriberen via lokale Whisper. */
+  async function startWhisperRecording(ta, entry, micBtn, status, interim) {
+    if (!navigator.mediaDevices || !window.MediaRecorder) { status.textContent = "Opname wordt niet ondersteund in deze browser."; return; }
+    let stream;
+    try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+    catch (e) { status.textContent = "Geen microfoontoegang. Sta de microfoon toe (en gebruik http://localhost of https)."; return; }
+
+    let rec;
+    try { rec = new MediaRecorder(stream); } catch (e) { status.textContent = "Kon de opname niet starten."; stream.getTracks().forEach(t => t.stop()); return; }
+    activeRecorder = rec;
+    const chunks = [];
+    rec.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+    rec.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      micBtn.textContent = "🎤 Spreek antwoord";
+      micBtn.classList.remove("rec-on");
+      if (activeRecorder === rec) activeRecorder = null;
+      const blob = new Blob(chunks, { type: rec.mimeType || "audio/webm" });
+      status.textContent = "Transcriberen met Whisper…";
+      interim.hidden = false; interim.textContent = "⏳ Even geduld, je laptop verwerkt de audio…";
+      micBtn.disabled = true;
+      try {
+        const text = await transcribeViaWhisper(blob);
+        if (text) {
+          const sep = ta.value && !/\s$/.test(ta.value) ? " " : "";
+          ta.value = ta.value + sep + text;
+          entry.notitie = ta.value; saveStore(store);
+          status.textContent = "Klaar ✓ (via Whisper)";
+        } else { status.textContent = "Geen tekst herkend."; }
+      } catch (err) {
+        status.textContent = "Whisper-fout: " + err.message + " — draait de server? Controleer ⚙ Transcriptie.";
+      }
+      interim.hidden = true; interim.textContent = "";
+      micBtn.disabled = false;
+    };
+    micBtn.textContent = "⏹ Stop opnemen";
+    micBtn.classList.add("rec-on");
+    status.textContent = "Aan het opnemen… (Whisper). Klik om te stoppen en te transcriberen.";
+    rec.start();
+  }
 
   /* Bouwt de spreek-balk (voorlezen + antwoord inspreken) onder een vraag. */
   function speakBar(q, ta, entry) {
@@ -112,15 +239,23 @@
     const interim = el("div", "speak-interim");
     interim.hidden = true;
 
-    if (!SpeechRec) {
+    const canBrowser = !!SpeechRec;
+    const canWhisper = !!(navigator.mediaDevices && window.MediaRecorder);
+    if (!canBrowser && !canWhisper) {
       micBtn.disabled = true;
-      micBtn.title = "Spraakherkenning werkt in Chrome of Edge. Typen kan altijd.";
-      status.textContent = "Spraak-naar-tekst: gebruik Chrome of Edge.";
+      micBtn.title = "Geen spraakopname mogelijk in deze browser. Typen kan altijd.";
     } else {
       micBtn.addEventListener("click", () => {
-        if (activeRec) { stopRecognition(); return; } // toggle uit
+        if (activeRecorder) { stopRecorder(); return; }   // toggle Whisper-opname uit
+        if (activeRec) { stopRecognition(); return; }      // toggle browser-opname uit
         stopSpeaking();
-        startDictation(q, ta, entry, micBtn, status, interim);
+        if (sttSettings.engine === "whisper") {
+          if (!canWhisper) { status.textContent = "Opname niet ondersteund in deze browser."; return; }
+          startWhisperRecording(ta, entry, micBtn, status, interim);
+        } else {
+          if (!canBrowser) { status.textContent = "Spraakherkenning werkt in Chrome/Edge. Of kies Whisper bij ⚙."; return; }
+          startBrowserDictation(ta, entry, micBtn, status, interim);
+        }
       });
     }
     bar.appendChild(micBtn);
@@ -132,7 +267,7 @@
     return wrap;
   }
 
-  function startDictation(q, ta, entry, micBtn, status, interim) {
+  function startBrowserDictation(ta, entry, micBtn, status, interim) {
     let rec;
     try { rec = new SpeechRec(); } catch (e) { status.textContent = "Kon de microfoon niet starten."; return; }
     rec.lang = "nl-NL";
@@ -180,7 +315,7 @@
   /* ---------- view switching ---------- */
   function showView(name) {
     stopSpeaking();
-    stopRecognition();
+    stopAllCapture();
     $$(".view").forEach(v => v.classList.add("is-hidden"));
     const view = $("#view-" + name);
     if (view) view.classList.remove("is-hidden");
@@ -784,10 +919,68 @@
   window.addEventListener("afterprint", () => document.body.classList.remove("printing"));
 
   /* ===================================================================
+     TRANSCRIPTIE-INSTELLINGEN (paneel)
+  =================================================================== */
+  function setupSttPanel() {
+    const panel = $("#sttPanel");
+    if (!panel) return;
+
+    // waarden invullen vanuit opgeslagen settings
+    $$('input[name="sttEngine"]').forEach(r => { r.checked = (r.value === sttSettings.engine); });
+    $("#sttFormat").value = sttSettings.format;
+    $("#sttUrl").value = sttSettings.url;
+    $("#sttLang").value = sttSettings.lang;
+    $("#sttModel").value = sttSettings.model;
+    reflectEngine();
+
+    function reflectEngine() {
+      const isW = sttSettings.engine === "whisper";
+      $("#sttWhisperOpts").style.display = isW ? "block" : "none";
+      const pill = $("#sttActivePill");
+      if (pill) { pill.textContent = isW ? "Actief: lokale Whisper" : "Actief: browser"; pill.className = "stt-pill " + (isW ? "on" : ""); }
+    }
+
+    $$('input[name="sttEngine"]').forEach(r => r.addEventListener("change", () => {
+      if (r.checked) { sttSettings.engine = r.value; saveStt(); reflectEngine(); }
+    }));
+    $("#sttFormat").addEventListener("change", () => {
+      sttSettings.format = $("#sttFormat").value;
+      // vul standaard-URL in als die nog leeg is of een andere preset was
+      const presets = Object.keys(STT_PRESETS).map(k => STT_PRESETS[k].url);
+      if (!$("#sttUrl").value || presets.indexOf($("#sttUrl").value) >= 0) {
+        sttSettings.url = STT_PRESETS[sttSettings.format].url;
+        $("#sttUrl").value = sttSettings.url;
+      }
+      saveStt();
+    });
+    $("#sttUrl").addEventListener("input", () => { sttSettings.url = $("#sttUrl").value.trim(); saveStt(); });
+    $("#sttLang").addEventListener("input", () => { sttSettings.lang = $("#sttLang").value.trim(); saveStt(); });
+    $("#sttModel").addEventListener("input", () => { sttSettings.model = $("#sttModel").value.trim(); saveStt(); });
+
+    $("#sttTest").addEventListener("click", async () => {
+      const out = $("#sttTestResult");
+      out.textContent = "Bezig met testen…";
+      out.className = "muted";
+      try {
+        await fetch(sttSettings.url, { method: "OPTIONS", mode: "cors" });
+        out.textContent = "✓ Endpoint bereikbaar. Probeer nu een vraag in te spreken.";
+        out.className = "stt-ok";
+      } catch (e) {
+        out.textContent = "✗ Niet bereikbaar. Draait de Whisper-server op dit adres? Zie de uitleg hieronder.";
+        out.className = "stt-bad";
+      }
+    });
+
+    $("#btnSttToggle").addEventListener("click", () => panel.classList.toggle("is-hidden"));
+    $("#sttClose").addEventListener("click", () => panel.classList.add("is-hidden"));
+  }
+
+  /* ===================================================================
      INIT
   =================================================================== */
   function init() {
     renderHome();
+    setupSttPanel();
     $$("[data-view]").forEach(b => b.addEventListener("click", () => showView(b.dataset.view)));
 
     buildLolSelect($("#filterLol"), true, true);
