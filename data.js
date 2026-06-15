@@ -3,8 +3,8 @@
    Mika Hillenga — Ommelander Ziekenhuis Groningen — Hanzehogeschool
    ---------------------------------------------------------------------
    Alle inhoud (vragen, modelpunten, feiten) is afgeleid uit het
-   ingeleverde portfolio. Pas dit bestand gerust aan: je kunt vragen
-   toevoegen, modelpunten verfijnen of feiten bijwerken.
+   ingeleverde portfolio en de bijlagen (verdiepende opdracht +
+   beschrijvende opdrachten). Pas dit bestand gerust aan.
    ===================================================================== */
 
 const CGI_DATA = {
@@ -21,7 +21,7 @@ const CGI_DATA = {
   },
 
   /* ------------------------------------------------------------------
-     De vijf leeruitkomsten (LOL's)
+     De vijf leeruitkomsten (LOL's) + beoordelingscriteria
   ------------------------------------------------------------------ */
   lols: [
     {
@@ -30,12 +30,14 @@ const CGI_DATA = {
       naam: "Bedrijfskundig handelen",
       kleur: "#2563eb",
       kern: "Een breed vraagstuk gestructureerd en methodisch aanpakken, van probleem tot onderbouwd advies.",
+      criteria: "Op niveau 2 laat je zien dat je een breed vraagstuk methodisch aanpakt: je kiest bewust een model, doet eerst diagnose vóór oplossing en onderbouwt je prioriteiten met data.",
+      vervolgvraag: "Noem één concreet moment waarop je methode (A3 of de PICK-matrix) je oorspronkelijke ingeving heeft veranderd.",
       sleutelmomenten: [
         "Keuze voor de A3-methode bij het vraagstuk verkeerde-bed patiënten",
         "Meelopen op de afdeling (Gemba walk) om het vraagstuk te begrijpen",
         "Verbeterpunten prioriteren met de PICK-matrix (OK-leeninstrumentarium)"
       ],
-      bewijslast: "Verdiepende opdracht (bijlage A), organisatieanalyse (bijlage H), beschrijvende opdracht procesmanagement OK (bijlage L)",
+      bewijslast: "Verdiepende opdracht (bijlage A), organisatieanalyse (bijlage H), beschrijvende opdracht procesmanagement OK (bijlage L), financiële data-analist (bijlage N)",
       leerdoel: "Leerdoel 1: zelfstandige analyse"
     },
     {
@@ -44,6 +46,8 @@ const CGI_DATA = {
       naam: "Onderzoeken",
       kleur: "#0d9488",
       kern: "Een vraagstuk methodisch onderzoeken: data verzamelen, ordenen, kritisch beoordelen en conclusies onderbouwen.",
+      criteria: "Je laat een betrouwbare onderzoekslijn zien: heldere vraag, verantwoorde methode, data ordenen en de grenzen van je onderzoek eerlijk benoemen.",
+      vervolgvraag: "Als je dit onderzoek opnieuw deed met meer tijd, welke bron of methode zou je toevoegen en waarom?",
       sleutelmomenten: [
         "Opzet van het observatieonderzoek (26 observaties, 215 handelingen)",
         "Data opschonen en kritisch naar de eigen methode kijken",
@@ -58,6 +62,8 @@ const CGI_DATA = {
       naam: "Innoverende en ondernemende houding tonen",
       kleur: "#7c3aed",
       kern: "Verbeterkansen signaleren, een breed probleem vertalen naar een uitvoerbaar voorstel en de waarde daarvan onderbouwen.",
+      criteria: "Je signaleert verbeterkansen en vertaalt een breed probleem naar een uitvoerbaar, onderbouwd voorstel binnen de ruimte die er is.",
+      vervolgvraag: "Wat maakt jouw voorstel niet alleen een goed idee, maar ook uitvoerbaar voor de afdeling?",
       sleutelmomenten: [
         "Breed probleem vertalen naar een concreet pilotontwerp (5 geclusterde bedden)",
         "Doorpakken waar informatie of bevoegdheid ontbrak (zelf data, P&O-lijn)",
@@ -72,6 +78,8 @@ const CGI_DATA = {
       naam: "Verbinden",
       kleur: "#ea580c",
       kern: "Schakelen tussen niveaus en mensen, een gevoelig onderwerp bespreekbaar houden en samenwerken om kennis op te halen.",
+      criteria: "Je schakelt tussen niveaus en mensen, houdt een gevoelig onderwerp bespreekbaar en haalt kennis op door samen te werken.",
+      vervolgvraag: "Beschrijf een moment waarop je merkte dat je boodschap niet aankwam — wat deed je toen anders?",
       sleutelmomenten: [
         "Schakelen tussen werkvloer (verpleegkundigen) en leiding (Mariska/Joanne)",
         "Een gevoelig onderwerp bespreekbaar houden (verzorgende i.p.v. verpleegkundige)",
@@ -86,6 +94,8 @@ const CGI_DATA = {
       naam: "Persoonlijk leiderschap tonen",
       kleur: "#db2777",
       kern: "Verantwoordelijkheid nemen, feedback echt verwerken, eigen grenzen herkennen en reflecteren op het eigen handelen.",
+      criteria: "Je neemt verantwoordelijkheid, verwerkt feedback zichtbaar en reflecteert eerlijk op je eigen handelen en grenzen.",
+      vervolgvraag: "Welke feedback heeft je deze stage het meest veranderd, en wat doe je nu structureel anders?",
       sleutelmomenten: [
         "Feedback op het concept omzetten in een betere definitieve versie",
         "Eigen grenzen herkennen en opzoeken (meelopen OK, patiëntveiligheid)"
@@ -95,6 +105,15 @@ const CGI_DATA = {
     }
   ],
 
+  /* Portfolio-brede groep (geen formele LOL) */
+  algGroep: {
+    id: "alg",
+    naam: "Portfolio-breed",
+    kleur: "#475569",
+    criteria: "Je overziet je eigen portfolio: je kent je rode draad, je eigen aandeel en je ontwikkelrichting.",
+    vervolgvraag: "Als ik één bijlage zou openslaan om jouw groei te zien, welke moet dat zijn en waarom?"
+  },
+
   /* ------------------------------------------------------------------
      Vraagtypes (voor filteren)
   ------------------------------------------------------------------ */
@@ -102,6 +121,25 @@ const CGI_DATA = {
     open:      { label: "Openingsvraag",  uitleg: "Brede startvraag — vertel je verhaal in STARR." },
     doorvraag: { label: "Doorvraag",      uitleg: "De assessor graaft dieper: 'waarom', 'hoe weet je dat', 'geef een voorbeeld'." },
     kritisch:  { label: "Kritische vraag", uitleg: "De assessor speelt advocaat van de duivel of toetst eigenaarschap." }
+  },
+
+  /* ------------------------------------------------------------------
+     Rubric voor de CGI-beoordelaar
+  ------------------------------------------------------------------ */
+  rubric: {
+    dimensies: [
+      { naam: "Meewerken aan de werkwijzen", toelichting: "Kennismaken met en meewerken aan de operationele processen en procedures van de afdeling." },
+      { naam: "Beroepsvaardigheden", toelichting: "Planmatig werken, samenwerken, overtuigend communiceren en gedrag van collega's beïnvloeden." },
+      { naam: "Beroepshouding", toelichting: "Proactief, onderzoekend, kritisch, klantgericht en organisatiesensitief handelen." },
+      { naam: "Reflectief en lerend", toelichting: "Bewust van eigen ontwikkeling, feedback toepassen en het eigen handelen blijven toetsen." }
+    ],
+    banden: {
+      goed:        { key: "goed",        label: "Goed — overtuigend op niveau 2",      kleur: "#16a34a", advies: "Sterk en concreet onderbouwd. Houd je voorbeelden en cijfers paraat en blijf koppelen aan je POP." },
+      voldoende:   { key: "voldoende",   label: "Voldoende — niveau 2 aangetoond",     kleur: "#0d9488", advies: "Je toont de leeruitkomst aan. Scherp de gemiste kernpunten aan om steviger te staan tijdens doorvragen." },
+      bijna:       { key: "bijna",       label: "Bijna voldoende — aanscherpen",       kleur: "#d97706", advies: "De basis staat, maar je laat nog kernpunten liggen. Oefen gericht de gemiste punten en onderbouw met je bijlagen." },
+      onvoldoende: { key: "onvoldoende", label: "Onvoldoende bewijs — meer nodig",     kleur: "#dc2626", advies: "Je raakt de kern nog te weinig. Werk de modelpunten door, oefen opnieuw en koppel aan concrete bewijslast." },
+      none:        { key: "none",        label: "Nog niet geoefend",                   kleur: "#94a3b8", advies: "Oefen de vragen van deze leeruitkomst en vink per vraag aan welke kernpunten je noemde." }
+    }
   },
 
   /* ------------------------------------------------------------------
@@ -116,9 +154,10 @@ const CGI_DATA = {
       modelpunten: [
         "Breed vraagstuk: raakte taakverdeling, afdelingsindeling, personele inzet, bevoegdheden én medezeggenschap tegelijk.",
         "Bewuste keuze voor de A3-methode (7 stappen): eerst probleem en huidige situatie scherp, dan pas doel en maatregelen.",
-        "Drie sporen: (1) procesonderzoek + plan van aanpak, (2) observatieonderzoek, (3) functieprofiel + medezeggenschap via P&O.",
-        "Uitkomst: onderbouwd voorstel — clustering van 5 bedden, hybride personele inzet, werkafspraken met escalatiecriteria.",
-        "Eerlijk over de stand: pilot moet nog starten, functieprofiel en OR-route nog in bewerking."
+        "5x-waarom leidde naar de grondoorzaak: het ontbreken van een formeel functieprofiel voor een verzorgende op een verpleegafdeling.",
+        "Onderbouwd verbeterdoel: aandeel verpleegkundige tijd aan laagcomplexe zorg terug van 49% naar maximaal 20% per dienst.",
+        "Voorstel: clustering van 5 bedden (Gang 251), hybride personele inzet (verzorgende/IG), werkafspraken met escalatiecriteria.",
+        "Eerlijk over de stand: pilot van 6 weken moet nog starten; functieprofiel en OR-route nog in bewerking."
       ]
     },
     {
@@ -127,7 +166,8 @@ const CGI_DATA = {
       modelpunten: [
         "A3 dwingt je eerst probleem en huidige situatie scherp te krijgen vóór je een doel en maatregelen bepaalt.",
         "Past bij de complexiteit van het vraagstuk en voorkomt te snel naar een oplossing springen.",
-        "Methode die het bureau aandraagt én die je op de opleiding (procesmanagement) hebt geleerd — dus onderbouwde keuze.",
+        "Methode die het bureau aandraagt én die je op de opleiding (procesmanagement) hebt geleerd — onderbouwde keuze.",
+        "Sluit aan op het organisatiedoel: slimmer werken, basis op orde, herstelplan.",
         "Resultaat: gestructureerd traject waarin probleem → oorzaken → doel → maatregelen logisch op elkaar volgen (bijlage A).",
         "Reflectie: de methode 'remde je af', en dat had je nodig (rode draad POP)."
       ],
@@ -150,7 +190,7 @@ const CGI_DATA = {
       vraag: "Welke andere aanpak of methode had je kunnen kiezen in plaats van A3, en waarom paste die minder goed?",
       modelpunten: [
         "Toon dat je een afweging maakte en niet zomaar de eerste methode pakte.",
-        "Alternatieven die je elders gebruikte: PDCA-cyclus, DMAIC/Lean-denken, of direct een verbeterplan zonder diagnosefase.",
+        "Alternatieven die je elders gebruikte: PDCA/PDSA-cyclus, DMAIC/Lean-denken, of direct een verbeterplan zonder diagnosefase.",
         "Waarom A3 paste: combineert probleemanalyse, doel en maatregelen op één gestructureerde plaat — geschikt voor een breed, gevoelig vraagstuk.",
         "Een aanpak zonder grondige diagnosefase zou jouw valkuil (te snel naar oplossing) juist versterken.",
         "Laat zien dat methodekeuze afhangt van het type vraagstuk, niet van gewoonte."
@@ -169,13 +209,14 @@ const CGI_DATA = {
     },
     {
       id: "l1-q6", lol: "lol1", type: "doorvraag",
-      vraag: "Je gebruikte de PICK-matrix bij het OK-proces. Wat zou je geadviseerd hebben zónder die matrix, en wat veranderde de matrix concreet aan je advies?",
+      vraag: "Je gebruikte de PICK-matrix bij het OK-leeninstrumentariumproces. Wat waren de kwetsbaarheden in dat proces, en wat veranderde de matrix concreet aan je advies?",
       modelpunten: [
-        "Context: OK-leeninstrumentarium, 5 overdrachtsmomenten, lange doorlooptijd die vooral uit wachttijd bestaat.",
-        "PICK scoort verbeterpunten op impact vs. inspanning — dwingt tot onderbouwde prioritering.",
-        "Uitkomst: aanvraagtermijn vastleggen als harde systeemeis levert de meeste winst met de minste inspanning.",
-        "Zonder matrix: risico om op gevoel te prioriteren of het 'grootste' probleem te pakken i.p.v. het slimste.",
-        "De onderbouwing maakte het advies overtuigender richting betrokkenen (bijlage L)."
+        "Context: OK-leeninstrumentarium; doorlooptijd van 2–3 weken die vooral uit wáchttijd bestaat (Hendriks, 2021).",
+        "Vijf overdrachtsmomenten, elk met een eigen foutkans; eigenaarschap over de héle keten ontbreekt; 48-uurs buffer voor de CSA.",
+        "PICK-matrix scoort verbeterpunten op impact vs. inspanning — dwingt tot onderbouwde prioritering.",
+        "Uitkomst: aanvraagtermijn standaardiseren + duidelijke leveranciersafspraken = meeste winst, minste inspanning.",
+        "Digitale statustracking en een beter telprotocol als versterking voor de langere termijn.",
+        "Zonder matrix: risico om op gevoel te prioriteren of het 'grootste' i.p.v. het slimste probleem te pakken (bijlage L)."
       ]
     },
     {
@@ -194,11 +235,24 @@ const CGI_DATA = {
       vraag: "Je analyse gaat over één afdeling (3B). Hoe weet je dat je conclusie niet toevallig alleen voor die afdeling geldt?",
       modelpunten: [
         "Eerlijk: de observaties liepen over 3A, 3B én 2B, dus niet alleen 3B — dat versterkt de generaliseerbaarheid iets.",
-        "Erken de grens: afdelingsspecifieke cijfers voor 3B ontbraken; je voorstel is een pilot, juist om het in de praktijk te toetsen.",
+        "Erken de grens: afdelingsspecifieke cijfers voor 3B ontbraken (privacygevoelig); je voorstel is daarom een pilot om het te toetsen.",
         "Verkeerde-bed patiënten zijn een structureel probleem op meerdere verpleegafdelingen (6–12 per dag OZG-breed).",
-        "Schaalbaarheid is een vervolgvraag: eerst pilot evalueren met KATA, dan pas breder.",
+        "Schaalbaarheid is een vervolgvraag: eerst pilot evalueren met KATA/PDCA, dan pas breder.",
         "Toont onderzoekshouding: claim niet meer dan je data dragen."
       ]
+    },
+    {
+      id: "l1-q9", lol: "lol1", type: "doorvraag",
+      vraag: "Hoe draagt Bureau Procesverbetering en Projecten bij aan de strategie van het OZG? Je legde dat uit met kritische succesfactoren en KPI's.",
+      modelpunten: [
+        "Strategie volgt uit het Herstelplan 2025–2027 (verlies 2024 ≈ €1,9 mln; verwacht 2025 ≈ €4 mln).",
+        "Drie KSF's: financieel duurzaam herstel (EBITDA ~7%), productiviteit (+2% in 2026) en van reactief naar proactief (continu verbeteren).",
+        "BPP draagt indirect bij: het realiseert zelf geen zorgproductie, maar faciliteert afdelingen die dat wel doen.",
+        "BPP-KPI's: projectvoortgang (charters, planning, scope) + outcome-KPI's ligduur 3A/3B en OK-benutting.",
+        "Sturing via de PDSA-cyclus, verbeterborden/dagstarts en maandelijkse resultaatgesprekken op drie niveaus.",
+        "Eerlijke nuance: 'kwaliteit op orde' is voor BPP het minst concreet meetbaar (bijlage N)."
+      ],
+      koppeling: "Leerdoel 1 — zelfstandige analyse"
     },
 
     /* ===================== LOL 2 ===================== */
@@ -208,10 +262,10 @@ const CGI_DATA = {
       modelpunten: [
         "Aanleiding: het voorstel mocht niet op aannames leunen; er was geen harde data over wat deze groep echt nodig heeft.",
         "Doel: betrouwbaar in kaart brengen welke zorghandelingen, hoe complex, en of een verzorgende ze mag uitvoeren.",
-        "Keuze: gestructureerde observatie, zodat data direct uit de praktijk komt.",
-        "Uitvoering: meelopen op 3A, 3B, 2B; elke handeling in een observatieschema; coderen op zorgtype, risico, bevoegdheid.",
+        "Keuze: gestructureerde observatie, zodat data direct uit de praktijk komt; meelopen op 3A, 3B en 2B (dagdiensten).",
+        "Codering op zorgtype: ADL, mobiliteit, observatie, medicatie, technische handelingen, wondzorg, overleg, logistiek, overige.",
         "Meetlat: functiebeschrijvingen OZG (Verpleegkundige I en J + ziekenverzorgende) om bevoegdheid te beoordelen.",
-        "Resultaat: 26 observaties, 215 handelingen; overwegend laagcomplex; slechts 9% voorbehouden aan verpleegkundige (bijlage C)."
+        "Resultaat: 26 observaties, 215 handelingen; ADL 31% + mobiliteit 18% = 49% laagcomplex; slechts 9% voorbehouden (bijlage C)."
       ],
       koppeling: "Leerdoel 2 — eerst de oorzaak, dan de oplossing"
     },
@@ -220,9 +274,9 @@ const CGI_DATA = {
       vraag: "Hoe heb je de functiebeschrijvingen gebruikt om te bepalen of een verzorgende een handeling mag uitvoeren?",
       modelpunten: [
         "Functiebeschrijvingen van Verpleegkundige I en J en van de ziekenverzorgende als objectieve meetlat.",
-        "Per handeling beoordeeld of die binnen de bevoegdheid van een verzorgende valt.",
-        "Daardoor werd je oordeel controleerbaar en geen mening.",
+        "Per handeling beoordeeld of die binnen de bevoegdheid van een verzorgende valt — oordeel controleerbaar, geen mening.",
         "Belangrijk onderscheid: verzorgende niveau 3 vs. verzorgende IG niveau 3 — bepaalt wat je mag delegeren.",
+        "Voorbehouden gebleven: katheteriseren, blaasspoelen, wondzorg, insuline, klinische beoordeling, escalatie.",
         "Conclusie onderbouwd: het grootste deel laagcomplex, 9% voorbehouden."
       ]
     },
@@ -275,12 +329,36 @@ const CGI_DATA = {
       id: "l2-q7", lol: "lol2", type: "doorvraag",
       vraag: "Bij de duurzaamheidsnulmeting koos je drie perspectieven. Waarom juist die drie rollen, en wat leverde dat op?",
       modelpunten: [
-        "Drie rollen: coördinator, medewerker en patiënt — organisatie, werkvloer én klant.",
-        "Cijfers uit het jaardocument als aanvulling op de interviews.",
+        "Kader: Triple Bottom Line / people-planet-profit (Marcus & Van Dam, 2019).",
+        "Drie rollen: coördinator KCC, medewerker KCC en een (oudere) patiënt — organisatie, werkvloer én klant.",
+        "Cijfers uit het Jaardocument 2024 als objectieve aanvulling op de interviews (triangulatie).",
         "Belangrijkste bevinding: het ziekenhuis doet veel aan duurzaamheid, maar de patiënt merkt daar weinig van.",
-        "Dat verschil zag je pas door de perspectieven naast elkaar te leggen (triangulatie).",
+        "Dat verschil zag je pas door de perspectieven naast elkaar te leggen.",
         "Les: meerdere bronnen/rollen geven een eerlijker beeld dan alleen de organisatie bevragen (bijlage I)."
       ]
+    },
+    {
+      id: "l2-q8", lol: "lol2", type: "kritisch",
+      vraag: "Twee van je drie respondenten in de duurzaamheidsnulmeting waren familieleden. Hoe betrouwbaar en objectief is dat?",
+      modelpunten: [
+        "Erken de beperking eerlijk: familie als respondent geeft risico op bias en sociaal wenselijke antwoorden.",
+        "Wat het wél opleverde: snelle toegang tot drie verschillende rollen (organisatie, werkvloer, patiënt) voor een eerste nulmeting.",
+        "Je leunde niet alleen op interviews: cijfers uit het Jaardocument 2024 als objectieve aanvulling.",
+        "Het doel was een nulmeting/oefening met perspectieven, geen representatief eindonderzoek.",
+        "Verbeterpunt: voor een betrouwbaarder beeld onafhankelijke respondenten en een grotere steekproef kiezen."
+      ]
+    },
+    {
+      id: "l2-q9", lol: "lol2", type: "doorvraag",
+      vraag: "Je verbeterdoel is om het aandeel verpleegkundige tijd aan laagcomplexe zorg terug te brengen van 49% naar maximaal 20%. Hoe kwam je aan die 49%, en waarom is dit een goed geformuleerd doel?",
+      modelpunten: [
+        "De 49% komt uit je eigen observatiedata: ADL 31% + mobiliteit 18%.",
+        "Het doel beschrijft een gewenste uitkomst, niet een oplossingsrichting (les uit de feedback).",
+        "Het is SMART: meetbaar (max 20% per dienst) en tijdgebonden (vier opeenvolgende weken vanaf pilotstart).",
+        "Twee subdoelen: ≥80% van de verkeerde-bed patiënten ligt in het cluster; taakverdeling-duidelijkheid ≥4 op schaal 1–5.",
+        "Aansluiting op organisatiedoel: juiste medewerker op de juiste taak, kwaliteit behouden (herstelplan)."
+      ],
+      koppeling: "Leerdoel 2 — eerst de oorzaak, dan de oplossing"
     },
 
     /* ===================== LOL 3 ===================== */
@@ -289,6 +367,7 @@ const CGI_DATA = {
       vraag: "Hoe heb je het brede probleem van verkeerde-bed patiënten omgezet in iets concreets en uitvoerbaars?",
       modelpunten: [
         "Brede ontwikkeling (structureel probleem op veel afdelingen, herstelplan) gekoppeld aan de interne situatie van 3B.",
+        "Onderbouwd met de grondoorzaak (5x-waarom) en een meetbaar doel (49% → max. 20%).",
         "Concreet ontwerp: pilot met 5 geclusterde bedden, hybride personele inzet, werkafspraken met escalatiecriteria.",
         "Resultaat: een voorstel dat het ziekenhuis in de praktijk kan toetsen (stap 5 en 6, bijlage A).",
         "Inzicht: een goed idee is nog geen goed voorstel — waarde ontstaat pas binnen de ruimte van bevoegdheden en draagvlak.",
@@ -311,11 +390,12 @@ const CGI_DATA = {
       id: "l3-q3", lol: "lol3", type: "open",
       vraag: "Bij de AFAS-haalbaarheidsstudie moest je de waarde van een idee onderbouwen. Hoe heb je dat aangepakt?",
       modelpunten: [
-        "Value Proposition Canvas gebruikt om de waarde (pijnpunten die het oplost) te bepalen.",
-        "De acht stappen van Kotter gebruikt om de verandering te analyseren.",
-        "Liet zien dat het systeem concrete pijnpunten oplost en welke succesfactoren/risico's er zijn (bijlage K).",
-        "Zelfde houding bij heropening Neurologie: plan om laagcomplexe huisartsverwijzingen terug te dringen (bijlage T).",
-        "Les: met VPC en Kotter onderbouw je een verbeteridee i.p.v. het alleen 'een goed idee' te noemen — dat overtuigt anderen."
+        "AFAS ERP integreert P&O, Payroll, Financiën, Inkoop, Logistiek en de OK in één platform met gedeelde data.",
+        "Value Proposition Canvas: klanttaken (bestellen, facturen, personeelsdata); pijnpunten (handmatige fouten, dubbele invoer, geen totaaloverzicht); gains (sneller werken, data-inzicht, minder repetitief).",
+        "De acht stappen van Kotter als kapstok voor succesfactoren en uitdagingen.",
+        "Risico dat je signaleerde: in de overgangsperiode dubbel bijhouden (oud systeem + AFAS) verhoogt tijdelijk de foutkans.",
+        "Aanbeveling: Fase 2-optimalisaties borgen via een ontwikkelkalender met kwartaalreviews (bijlage K).",
+        "Zelfde houding bij Neurologie: laagcomplexe huisartsverwijzingen terugdringen (bijlage T)."
       ]
     },
     {
@@ -338,6 +418,17 @@ const CGI_DATA = {
         "Je nam initiatief buiten je comfortzone: zelf data verzamelen, P&O en medezeggenschap aankaarten.",
         "Je durfde een onderbouwd voorstel neer te leggen dat getoetst (en mogelijk afgewezen) kan worden.",
         "Risicobeheersing hoort erbij: je hield het als 'onderzoek onder voorbehoud', niet als vaststaand besluit."
+      ]
+    },
+    {
+      id: "l3-q6", lol: "lol3", type: "doorvraag",
+      vraag: "Vertel over je conceptplan voor de heropening van de Neurologie. Wat stelde je voor, en waarom is het uiteindelijk blijven liggen?",
+      modelpunten: [
+        "Probleem: patiëntenstop door beperkte capaciteit en hoge instroom (~350 nieuwe patiënten per maand), oplopende wachttijden.",
+        "Kern van je idee: sturen op verwijzingen — laagcomplexe klachten (aspecifieke lage rugpijn, hoofdpijn zonder alarmsymptomen) terug naar de eerste lijn.",
+        "Concreet: digitale filtering/screening van verwijzingen (ZorgDomein) en mogelijke ondersteuning door het secretariaat.",
+        "Bevinding: verwijzingssturing was nog geen expliciet strategisch speerpunt; organisatie ervoor klaar, maar moet in strategie/systemen/communicatie.",
+        "Eerlijk: het bleef concept — er is niet op doorgepakt; deels je eigen werkaantekeningen (bijlage T)."
       ]
     },
 
@@ -392,11 +483,12 @@ const CGI_DATA = {
       id: "l4-q5", lol: "lol4", type: "doorvraag",
       vraag: "Je noemt medezeggenschap een randvoorwaarde, maar schrijft ook dat je advies- versus instemmingsrecht nog niet sluitend in beeld hebt. Leg eens uit.",
       modelpunten: [
-        "Eerlijk dat je het onderscheid (adviesrecht vs. instemmingsrecht van de OR) nog niet sluitend hebt — dat is een open punt.",
-        "Het is wél een randvoorwaarde voordat een pilot structureel kan worden — je hebt het risico onderkend, niet genegeerd.",
+        "Adviesrecht kan spelen bij een wijziging in de organisatie van werkzaamheden als die belangrijk genoeg is.",
+        "Instemmingsrecht kan spelen bij personele regelingen (functiebeoordeling, scholing, inzet van personeel) en functiewaardering.",
+        "Eerlijk dat je het precieze onderscheid voor déze casus nog niet sluitend hebt — dat is een open punt.",
+        "Het is wél een randvoorwaarde voordat een pilot structureel wordt — je hebt het risico onderkend, niet genegeerd.",
         "Je hebt de vraag belegd via de P&O-werklijn (Corien Blokzijl) i.p.v. zelf buiten je mandaat te beslissen.",
-        "Volgorde die je aanhoudt: taken → competenties/diploma's → functiebeschrijving → medezeggenschap.",
-        "Toont organisatiesensitiviteit: weten wat je (nog) niet weet en het bij de juiste mensen neerleggen."
+        "Volgorde die je aanhoudt: taken → competenties/diploma's → functiebeschrijving → medezeggenschap."
       ]
     },
     {
@@ -404,11 +496,23 @@ const CGI_DATA = {
       vraag: "Bij de supply chain op de OK werkte je samen met anderen. Wat haalde die samenwerking op dat je alleen niet had gekund?",
       modelpunten: [
         "Je kon de keten niet vanaf papier doorgronden — je had kennis nodig van mensen die hem van binnenuit kennen.",
-        "Samenwerking met Harmina Fischer-Danker en Sonja Tien (hoofd OK-complexen / procesverbeteraar P&P).",
-        "Samen stappen, betrokken partijen en risico's in kaart gebracht (bijlage M).",
-        "Je maakte de keten zichtbaar in een procesplaat (4 artikeltypen, stappen, 5 aandachtspunten, bijlage R).",
+        "Samenwerking met Harmina Fischer-Danker (hoofd beide OK-complexen) en Sonja Tien (procesverbeteraar P&P).",
+        "Leeninstrumentarium staat niet op voorraad: per ingreep aanvragen, daarna direct retour — géén vaste buffer.",
+        "Je maakte de keten zichtbaar in een procesplaat met 4 artikeltypen, de stappen en 5 aandachtspunten (bijlage R).",
         "Sonja noemt jouw interactieve waardestroommapping als voorbeeld dat betrokkenen meer inzicht gaf — extern bevestigd resultaat."
       ]
+    },
+    {
+      id: "l4-q7", lol: "lol4", type: "doorvraag",
+      vraag: "In je verandermanagement-opdracht analyseerde je hoe het OZG van ad-hoc verbeteren naar continu verbeteren wil. Waarom is dat vooral een 'groen' vraagstuk, en wat betekent dat voor hoe je mensen meeneemt?",
+      modelpunten: [
+        "Kader: kleurenmodel van De Caluwé & Vermaak + professionele bureaucratie van Mintzberg.",
+        "Het herstelplan is 'blauw' ingestoken (top-down, rationeel gepland); de gewenste verandering vraagt 'groen' gedrag (leren, eigenaarschap).",
+        "GAP-analyse op drie dimensies: structuur (middelgroot), competenties (middelgroot) en cultuur/gedrag (grootste gap).",
+        "Kernconclusie: structuur en competenties zijn met formats/training te overbruggen; de cultuuromslag kost tijd en consistent voorbeeldgedrag.",
+        "Verbinding: in een professionele bureaucratie met autonome professionals moet je mensen meenemen, niet opleggen (rode draad POP)."
+      ],
+      koppeling: "Leerdoel 3 — doorvragen en schakelen"
     },
 
     /* ===================== LOL 5 ===================== */
@@ -478,6 +582,18 @@ const CGI_DATA = {
         "Je nam regie over je eigen leerproces: feedback vragen, POP bijstellen, vakkenkeuze maken.",
         "Leiderschap op niveau 2 = verantwoordelijkheid nemen en sturen binnen je rol, niet anderen aansturen."
       ]
+    },
+    {
+      id: "l5-q7", lol: "lol5", type: "doorvraag",
+      vraag: "De feedback zei dat je 5x-waarom-analyse meer een opsomming was dan een echte doorredenering. Hoe heb je dat concreet verbeterd?",
+      modelpunten: [
+        "Je redeneerde de oorzaken echt door tot de grondoorzaak: het ontbreken van een formeel functieprofiel voor een verzorgende.",
+        "Elke 'waarom' bouwt logisch op de vorige (laagcomplexe zorg → geen onderscheid → geen vaste werkwijze → andere personele samenstelling nodig → functieprofiel ontbreekt).",
+        "Je verbond de grondoorzaak aan de maatregelen: clustering alléén is niet genoeg, ook functieprofiel + medezeggenschap.",
+        "Andere feedbackpunten ook verwerkt: doel als uitkomst i.p.v. oplossing, stappen 3–7 concreter, documentatie aangevuld.",
+        "Bewijs: concept → definitieve versie (bijlage A) + feedbackformulier (bijlage B)."
+      ],
+      koppeling: "Leerdoel 4 — verantwoordelijkheid en reflectie"
     },
 
     /* ===================== Portfolio-breed / algemeen ===================== */
@@ -558,6 +674,17 @@ const CGI_DATA = {
         "Zelfstandige analyse opschalen naar een groter/complexer project.",
         "Persoonlijk leiderschap: eerder vragen om wat je nodig hebt (bijv. meeschrijven, toegang, data)."
       ]
+    },
+    {
+      id: "alg-q8", lol: "alg", type: "kritisch",
+      vraag: "Op een paar plekken verwijs je naar het gebruik van een AI-tool voor je bronnenlijst. Hoe heb je AI-hulpmiddelen ingezet, en hoe borg je dat de analyse en conclusies van jou zijn?",
+      modelpunten: [
+        "Wees open en concreet over waarvoor je AI gebruikte (bijv. APA-bronvermelding opmaken), niet voor de analyse zelf.",
+        "De inhoud is van jou: de observaties, codering, 5x-waarom, het verbetervoorstel en de reflecties heb jij gemaakt.",
+        "Je controleerde de AI-output (bronnen verifiëren) i.p.v. blind overnemen.",
+        "Transparantie: je benoemt het gebruik eerlijk in het document.",
+        "Laat zien dat je de afweging kent: AI als hulpmiddel voor vorm/efficiëntie, jouw eigen oordeel voor de inhoud."
+      ]
     }
   ],
 
@@ -570,8 +697,9 @@ const CGI_DATA = {
       items: [
         "Enige algemene 24-uursziekenhuis voor Noord- en Oost-Groningen; missie: 'Samen. De beste zorg. Dichtbij.'",
         "Juridisch zelfstandig, maar volledig eigendom van het UMCG (beperkt eigen speelruimte).",
-        "Herstelplan sinds eind 2024; in 2024 klein verlies (~1 ton) bij omzet van 187,4 miljoen euro.",
+        "Herstelplan 2025–2027; verlies 2024 ≈ €1,9 mln, verwacht verlies 2025 ≈ €4 mln; omzet ≈ 187,4 mln.",
         "~1.500 medewerkers, waaronder ruim 120 medisch specialisten; platte structuur, korte lijnen.",
+        "Professionele bureaucratie (Mintzberg): veel autonome, hoogopgeleide zorgprofessionals.",
         "Drie zorgclusters: Acuut, Snijdend, Beschouwend + stafclusters (ICT, P&O, Financiën)."
       ]
     },
@@ -581,32 +709,44 @@ const CGI_DATA = {
         "Verkeerde-bed patiënten: medisch uitbehandeld, wachten op verpleeghuis/revalidatie.",
         "OZG-breed dagelijks 6–12 verkeerde-bed patiënten, verspreid over afdelingen.",
         "Op 3B lagen ze tussen reguliere patiënten, zonder vaste zone en zonder aparte taakverdeling.",
-        "Voorstel: clustering van 5 bedden + hybride personele inzet + werkafspraken met escalatiecriteria.",
+        "Grondoorzaak (5x-waarom): geen formeel functieprofiel voor een verzorgende op een verpleegafdeling.",
+        "Voorstel: clustering van 5 bedden (Gang 251) + hybride inzet + werkafspraken met escalatiecriteria.",
         "Randvoorwaarden: verpleegkundige blijft achterwacht + escalatieprotocol; functieprofiel en OR-route nog in bewerking.",
-        "Opdrachtgever: Mariska Bouwman (hoofd 3B). Collega: Joanne Oelen. P&O: Corien Blokzijl."
+        "Opdrachtgever: Mariska Bouwman (hoofd 3B). Collega: Joanne Oelen. P&O: Corien Blokzijl. Pilot 6 weken, start medio juni 2026."
       ]
     },
     {
       titel: "Het onderzoek (cijfers)",
       items: [
-        "26 observaties op de afdelingen 3A, 3B en 2B (feb–mrt 2026).",
+        "26 observaties op de afdelingen 3A, 3B en 2B (feb–mrt 2026), alleen dagdiensten.",
         "215 geregistreerde zorghandelingen, gecodeerd op zorgtype, risico en bevoegdheid.",
-        "Zorg overwegend laagcomplex; ADL-zorg en mobiliteit samen bijna de helft van alle handelingen.",
-        "Slechts 9% van de handelingen is voorbehouden aan een verpleegkundige.",
+        "ADL 31% + mobiliteit 18% = 49% laagcomplex; slechts 9% voorbehouden aan een verpleegkundige.",
+        "Voorbehouden o.a.: katheteriseren, blaasspoelen, wondzorg, insuline-injecties.",
         "Meetlat: functiebeschrijvingen Verpleegkundige I en J + ziekenverzorgende (verzorgende niv. 3 vs. IG niv. 3)."
+      ]
+    },
+    {
+      titel: "Verbeterdoel (SMART) & evaluatie",
+      items: [
+        "Hoofddoel: aandeel verpleegkundige tijd aan laagcomplexe zorg van 49% → max. 20% per dienst (4 weken).",
+        "Subdoel 1: ≥80% van de verkeerde-bed patiënten ligt in het cluster (4 weken).",
+        "Subdoel 2: verpleegkundigen scoren de taakverdeling-duidelijkheid ≥4 op schaal 1–5.",
+        "Evaluatie op 3 niveaus: procesindicatoren, ervaringsindicatoren, veiligheidsindicatoren (o.a. escalaties, VIM-meldingen).",
+        "Escalatiecriteria: verpleegkundige binnen 5 min bij o.a. bewustzijnsverandering, benauwdheid, koorts >38,5, valincident."
       ]
     },
     {
       titel: "Methoden & modellen",
       items: [
-        "A3-methode (7 stappen) — gestructureerd verbetertraject.",
+        "A3-methode (7 stappen) + 5x-waarom voor de oorzakenanalyse.",
         "Gemba walk — meelopen op de afdeling om het echte proces te zien.",
         "PICK-matrix — prioriteren op impact vs. inspanning (OK-leeninstrumentarium).",
         "Gestructureerde observatie — data direct uit de praktijk.",
         "DESTEP, 7S-model (McKinsey), SWOT — organisatieanalyse (bijlage H).",
-        "Value Proposition Canvas + 8 stappen van Kotter — AFAS-haalbaarheidsstudie.",
-        "(Interactieve) waardestroommapping — OK supply chain (door Sonja Tien geprezen).",
-        "KATA-methode — wekelijkse evaluatieroutine voor stapsgewijs verbeteren (bijlage P)."
+        "Value Proposition Canvas + 8 stappen van Kotter — AFAS-haalbaarheidsstudie (bijlage K).",
+        "Kleurenmodel De Caluwé & Vermaak (blauw vs. groen) + GAP-analyse — verandermanagement (bijlage J).",
+        "KSF/KPI + PDSA-cyclus — financiële data-analist (bijlage N).",
+        "(Interactieve) waardestroommapping — OK supply chain (door Sonja Tien geprezen)."
       ]
     },
     {
@@ -624,7 +764,7 @@ const CGI_DATA = {
       items: [
         "Eindevaluatie (bijlage O): ruim voldoende op alle vier onderdelen (meewerken, beroepsvaardigheden, beroepshouding, reflectie).",
         "Genoemd: planmatig werken, actief luisteren, eigen initiatief, werken met verschillende analysemethoden.",
-        "Voorbeeld dat begeleiders noemen: interactieve waardestroommapping voor de OK.",
+        "Voorbeeld dat begeleiders noemen: interactieve waardestroommapping voor de OK (Sonja Tien).",
         "Vervolg: semester 'Organiseren voor de Toekomst' + minor 'Veranderen van Organisaties' (bijlage Q).",
         "Beroepsperspectief: procesadviseur, organisatieadviseur of projectmedewerker."
       ]
@@ -642,7 +782,7 @@ const CGI_DATA = {
     "Bij een kritische vraag: geef de assessor gelijk waar dat terecht is, benoem de grens eerlijk, en laat zien hoe je het mitigeerde.",
     "Onderbouw met je bewijslast: verwijs naar de bijlage (A t/m T) waar het bewijs staat.",
     "Koppel terug aan je POP en je groei — een CGI op niveau 2 draait sterk om reflectie en leervermogen.",
-    "Ken je cijfers uit je hoofd (26 observaties, 215 handelingen, 9%, 5 bedden, 6–12 patiënten). Zie het spiekbriefje.",
+    "Ken je cijfers uit je hoofd (26 observaties, 215 handelingen, 49% laagcomplex, 9% voorbehouden, 5 bedden, 6–12 patiënten). Zie het spiekbriefje.",
     "Weet je iets niet zeker? Zeg dat eerlijk en vertel hoe je het zou uitzoeken — dat is sterker dan bluffen."
   ]
 };

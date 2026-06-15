@@ -21,6 +21,7 @@
         <button class="nav-btn is-active" data-view="home">Start</button>
         <button class="nav-btn" data-view="oefenen">Oefenen</button>
         <button class="nav-btn" data-view="simulatie">CGI-simulatie</button>
+        <button class="nav-btn" data-view="beoordeling">CGI-beoordeling</button>
         <button class="nav-btn" data-view="spiekbriefje">Spiekbriefje</button>
         <button class="nav-btn" data-view="voortgang">Voortgang</button>
       </nav>
@@ -42,6 +43,7 @@
         <div class="hero-actions">
           <button class="btn btn-primary" data-view="oefenen">Begin met oefenen</button>
           <button class="btn btn-ghost" data-view="simulatie">Start een CGI-simulatie</button>
+          <button class="btn btn-ghost" data-view="beoordeling">Vraag een CGI-beoordeling</button>
         </div>
       </div>
 
@@ -51,9 +53,10 @@
         <h3>Hoe werkt het?</h3>
         <ol class="steps">
           <li><strong>Lees de vraag</strong> en beantwoord hardop (of typ je antwoord) volgens STARR.</li>
-          <li><strong>Vergelijk</strong> daarna met de modelpunten: welke punten miste je?</li>
-          <li><strong>Beoordeel jezelf</strong> (onvoldoende / voldoende / goed). Je voortgang wordt bewaard in je browser.</li>
+          <li><strong>Klap de modelpunten uit</strong> en <strong>vink aan</strong> welke kernpunten je daadwerkelijk noemde.</li>
+          <li><strong>Beoordeel jezelf</strong> (onvoldoende / voldoende / goed). Alles wordt bewaard in je browser.</li>
           <li><strong>Train onder druk</strong> met de CGI-simulatie: willekeurige vragen met een timer.</li>
+          <li><strong>Vraag je CGI-beoordeling</strong>: de site geeft per leeruitkomst een assessor-oordeel met sterke punten, gemiste punten en een vervolgvraag.</li>
         </ol>
       </div>
 
@@ -135,6 +138,16 @@
       </div>
 
       <div id="simResult" class="sim-result is-hidden"><!-- samenvatting via JS --></div>
+    </section>
+
+    <!-- ===================== CGI-BEOORDELING ===================== -->
+    <section class="view is-hidden" id="view-beoordeling">
+      <h2>Je CGI-beoordeling</h2>
+      <p class="muted">
+        Een assessor-oordeel per leeruitkomst, gebaseerd op de kernpunten die je per vraag aanvinkte als “genoemd”.
+        Oefen eerst vragen (in <b>Oefenen</b> of de <b>CGI-simulatie</b>) en vink je modelpunten aan; ververs daarna deze pagina.
+      </p>
+      <div id="beoordelingContainer"><!-- via JS --></div>
     </section>
 
     <!-- ===================== SPIEKBRIEFJE ===================== -->
