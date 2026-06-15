@@ -19,7 +19,7 @@ Werkt offline. Je antwoorden en zelfbeoordelingen worden alleen lokaal in je bro
 |-----------|--------------|
 | **Start** | Overzicht van de vijf leeruitkomsten + algemene CGI-tips. |
 | **Oefenen** | Filter op leeruitkomst en vraagtype. Beantwoord (typ of hardop), klap de **modelpunten** uit en **vink aan** welke kernpunten je noemde. Beoordeel jezelf (onvoldoende / voldoende / goed). |
-| **CGI-simulatie** | Een reeks willekeurige vragen met een **lopende timer**, net als in een echt gesprek. Kies aantal vragen, zwaarte en eventueel één leeruitkomst. |
+| **CGI-simulatie** | Een reeks willekeurige vragen met een **lopende timer**, net als in een echt gesprek. Kies aantal vragen, zwaarte en eventueel één leeruitkomst. Zet **spreekmodus** aan om elke vraag automatisch te laten voorlezen. |
 | **CGI-beoordeling** | De site speelt **assessor**: per leeruitkomst een oordeel (onvoldoende → goed) op basis van de kernpunten die je aanvinkte, met sterke punten, punten waarop hij/zij zou doorvragen en een vervolgvraag. Plus een voorlopig eindoordeel langs de vier beoordelingsdimensies. |
 | **Spiekbriefje** | Kerncijfers en feiten uit je stage (organisatie, onderzoek, methoden, POP) om je geheugen te checken. |
 | **Voortgang** | Per leeruitkomst zie je hoeveel vragen je oefende en hoe je jezelf beoordeelde. |
@@ -37,6 +37,23 @@ De CGI-beoordelaar kijkt per leeruitkomst naar het **percentage modelpunten dat 
 - **Openingsvraag** — brede startvraag; vertel je verhaal in STARR.
 - **Doorvraag** — de assessor graaft dieper ("waarom", "hoe weet je dat", "geef een voorbeeld").
 - **Kritische vraag** — advocaat van de duivel of een check op eigenaarschap.
+
+## Spreekmodus (hardop oefenen)
+
+Bij elke vraag staan twee knoppen:
+
+- **🔊 Lees voor** — de assessor leest de vraag hardop voor (tekst-naar-spraak).
+- **🎤 Spreek antwoord** — spreek je antwoord in; je woorden verschijnen live als tekst in het antwoordveld. Klik nogmaals om te stoppen.
+
+> Spraak-naar-tekst werkt het best in **Chrome of Edge** (geef de microfoon toegang). In andere browsers
+> kun je gewoon typen; voorlezen werkt vrijwel overal. In de CGI-simulatie kun je vragen ook automatisch
+> laten voorlezen via het vinkje **spreekmodus**.
+
+## PDF-rapport
+
+Op **CGI-beoordeling** staat **🖨️ Download als PDF**. Die opent de printdialoog van je browser; kies daar
+**“Opslaan als PDF”**. Je krijgt een net beoordelingsrapport met je naam, de datum, het eindoordeel, de vier
+beoordelingsdimensies en per leeruitkomst je oordeel, sterke punten, aandachtspunten en een vervolgvraag.
 
 ## STARR
 

@@ -258,6 +258,24 @@ select:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
 }
 .starr-pill b { color: var(--text); }
 
+/* spreekmodus */
+.speak-wrap { margin-top: 8px; }
+.speak-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.speak-status { font-size: .78rem; color: var(--text-soft); }
+.speak-read.busy { background: #dbeafe; color: var(--primary-d); border-color: #93c5fd; }
+.speak-mic.rec-on {
+  background: var(--bad); color: #fff; border-color: var(--bad);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,.45); } 50% { box-shadow: 0 0 0 6px rgba(220,38,38,0); } }
+.speak-interim {
+  margin-top: 8px; font-size: .9rem; font-style: italic; color: var(--text-soft);
+  background: var(--surface-2); border: 1px dashed var(--border);
+  border-radius: var(--radius-sm); padding: 8px 12px; min-height: 1.2em;
+}
+.check-line { display: flex; align-items: center; gap: 8px; font-size: .9rem; margin: 0 0 16px; cursor: pointer; }
+.check-line input { width: 16px; height: 16px; accent-color: var(--primary); }
+
 .q-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; align-items: center; }
 
 .model {
@@ -477,6 +495,44 @@ select:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
 .vc-followup p { margin: 3px 0 0; font-size: .92rem; font-weight: 600; }
 
 .beoordeling-cta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.beo-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.beo-header h2 { margin: 0; }
+
+/* ---------------- Printbaar rapport (PDF) ---------------- */
+#printRoot { display: none; }
+
+.pr-doc { color: #1e293b; font-size: 12px; }
+.pr-head { display: flex; justify-content: space-between; gap: 20px; border-bottom: 3px solid #2563eb; padding-bottom: 12px; margin-bottom: 16px; }
+.pr-head h1 { margin: 0; font-size: 22px; color: #1e3a8a; }
+.pr-sub { font-size: 12px; color: #64748b; }
+.pr-meta { text-align: right; font-size: 11px; color: #334155; line-height: 1.5; }
+.pr-overall { border: 2px solid #2563eb; border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; }
+.pr-overall-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 6px; }
+.pr-ol { font-size: 10px; text-transform: uppercase; letter-spacing: .5px; font-weight: 700; color: #64748b; }
+.pr-band { color: #fff; font-weight: 700; font-size: 11px; padding: 4px 12px; border-radius: 999px; }
+.pr-dims { margin-top: 8px; font-size: 11px; }
+.pr-dims ul, .pr-block ul { margin: 4px 0 0; padding-left: 18px; }
+.pr-dims li, .pr-block li { margin-bottom: 3px; }
+.pr-card { border: 1px solid #e2e8f0; border-left: 5px solid #2563eb; border-radius: 8px; padding: 10px 14px; margin-bottom: 10px; page-break-inside: avoid; }
+.pr-card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pr-card h2 { margin: 0; font-size: 14px; }
+.pr-stats { font-size: 11px; color: #475569; margin: 6px 0; }
+.pr-advies { margin: 4px 0 8px; }
+.pr-block { margin-bottom: 6px; font-size: 11px; }
+.pr-fu { font-size: 11px; background: #f1f5f9; border-radius: 6px; padding: 6px 10px; }
+.pr-muted { color: #64748b; }
+.pr-note { padding: 16px; background: #f8fafc; border-radius: 8px; }
+.pr-foot { margin-top: 14px; font-size: 10px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 8px; }
+
+@media print {
+  body.printing > * { display: none !important; }
+  body.printing > #printRoot {
+    display: block !important;
+    padding: 0; margin: 0;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  @page { margin: 16mm; }
+}
 
 /* ---------------- Footer ---------------- */
 .app-footer {

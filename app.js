@@ -55,8 +55,132 @@
   }
   function allGroupIds() { return DATA.lols.map(l => l.id).concat(["alg"]); }
 
+  /* ---------- spraak: voorlezen (TTS) + herkenning (STT) ---------- */
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+  const synth = window.speechSynthesis || null;
+  let activeRec = null;        // lopende SpeechRecognition
+  let dutchVoice = undefined;  // gecachte NL-stem
+
+  function pickDutchVoice() {
+    if (!synth) return null;
+    if (dutchVoice !== undefined) return dutchVoice;
+    const voices = synth.getVoices() || [];
+    dutchVoice = voices.find(v => /nl(-|_)?NL/i.test(v.lang)) || voices.find(v => /^nl/i.test(v.lang)) || null;
+    return dutchVoice;
+  }
+  if (synth && typeof synth.addEventListener === "function") {
+    synth.addEventListener("voiceschanged", () => { dutchVoice = undefined; pickDutchVoice(); });
+  }
+
+  function stopSpeaking() { if (synth) try { synth.cancel(); } catch (e) {} }
+
+  function speak(text, onDone) {
+    if (!synth) return false;
+    stopSpeaking();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "nl-NL";
+    const v = pickDutchVoice();
+    if (v) u.voice = v;
+    u.rate = 1.0; u.pitch = 1.0;
+    if (onDone) u.onend = onDone;
+    synth.speak(u);
+    return true;
+  }
+
+  function stopRecognition() {
+    if (activeRec) { try { activeRec.stop(); } catch (e) {} activeRec = null; }
+  }
+
+  /* Bouwt de spreek-balk (voorlezen + antwoord inspreken) onder een vraag. */
+  function speakBar(q, ta, entry) {
+    const bar = el("div", "speak-bar");
+
+    // Voorlezen
+    const readBtn = el("button", "btn btn-small btn-ghost speak-read", "🔊 Lees voor");
+    readBtn.title = synth ? "Laat de assessor de vraag voorlezen" : "Voorlezen wordt niet ondersteund in deze browser";
+    if (!synth) readBtn.disabled = true;
+    readBtn.addEventListener("click", () => {
+      stopRecognition();
+      readBtn.classList.add("busy");
+      speak(q.vraag, () => readBtn.classList.remove("busy"));
+    });
+    bar.appendChild(readBtn);
+
+    // Inspreken (STT)
+    const micBtn = el("button", "btn btn-small btn-ghost speak-mic", "🎤 Spreek antwoord");
+    const status = el("span", "speak-status");
+    const interim = el("div", "speak-interim");
+    interim.hidden = true;
+
+    if (!SpeechRec) {
+      micBtn.disabled = true;
+      micBtn.title = "Spraakherkenning werkt in Chrome of Edge. Typen kan altijd.";
+      status.textContent = "Spraak-naar-tekst: gebruik Chrome of Edge.";
+    } else {
+      micBtn.addEventListener("click", () => {
+        if (activeRec) { stopRecognition(); return; } // toggle uit
+        stopSpeaking();
+        startDictation(q, ta, entry, micBtn, status, interim);
+      });
+    }
+    bar.appendChild(micBtn);
+    bar.appendChild(status);
+
+    const wrap = el("div", "speak-wrap");
+    wrap.appendChild(bar);
+    wrap.appendChild(interim);
+    return wrap;
+  }
+
+  function startDictation(q, ta, entry, micBtn, status, interim) {
+    let rec;
+    try { rec = new SpeechRec(); } catch (e) { status.textContent = "Kon de microfoon niet starten."; return; }
+    rec.lang = "nl-NL";
+    rec.continuous = true;
+    rec.interimResults = true;
+    activeRec = rec;
+
+    micBtn.textContent = "⏹ Stop opnemen";
+    micBtn.classList.add("rec-on");
+    status.textContent = "Aan het luisteren… spreek je antwoord in.";
+    interim.hidden = false;
+
+    rec.onresult = (e) => {
+      let finalTxt = "", interimTxt = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalTxt += t; else interimTxt += t;
+      }
+      if (finalTxt) {
+        const sep = ta.value && !/\s$/.test(ta.value) ? " " : "";
+        ta.value = ta.value + sep + finalTxt.trim();
+        entry.notitie = ta.value;
+        saveStore(store);
+      }
+      interim.textContent = interimTxt;
+    };
+    rec.onerror = (e) => {
+      const m = e.error === "not-allowed" || e.error === "service-not-allowed"
+        ? "Geen microfoontoegang. Sta de microfoon toe in je browser."
+        : e.error === "no-speech" ? "Niets gehoord — probeer opnieuw."
+        : "Spraakfout: " + e.error;
+      status.textContent = m;
+    };
+    rec.onend = () => {
+      micBtn.textContent = "🎤 Spreek antwoord";
+      micBtn.classList.remove("rec-on");
+      interim.hidden = true;
+      interim.textContent = "";
+      if (activeRec === rec) activeRec = null;
+      if (!status.textContent.startsWith("Spraakfout") && !status.textContent.startsWith("Geen")) status.textContent = "Opname gestopt.";
+    };
+    try { rec.start(); } catch (e) { status.textContent = "Opname loopt al."; }
+  }
+
   /* ---------- view switching ---------- */
   function showView(name) {
+    stopSpeaking();
+    stopRecognition();
     $$(".view").forEach(v => v.classList.add("is-hidden"));
     const view = $("#view-" + name);
     if (view) view.classList.remove("is-hidden");
@@ -154,6 +278,8 @@
     ta.value = entry.notitie || "";
     ta.addEventListener("input", () => { entry.notitie = ta.value; saveStore(store); });
     card.appendChild(ta);
+
+    card.appendChild(speakBar(q, ta, entry));
 
     const actions = el("div", "q-actions");
     const btnModel = el("button", "btn btn-small btn-ghost", "💡 Toon modelpunten");
@@ -295,7 +421,9 @@
   function renderSimQuestion() {
     const slot = $("#simQuestionSlot");
     slot.innerHTML = "";
-    slot.appendChild(questionCard(sim.qs[sim.idx]));
+    const q = sim.qs[sim.idx];
+    slot.appendChild(questionCard(q));
+    if ($("#simSpeak") && $("#simSpeak").checked) speak(q.vraag);
     $("#simIndex").textContent = sim.idx + 1;
     $("#simFill").style.width = ((sim.idx + 1) / sim.qs.length * 100) + "%";
     $("#btnSimPrev").style.visibility = sim.idx === 0 ? "hidden" : "visible";
@@ -454,6 +582,15 @@
 
   const BAND_SCORE = { goed: 3, voldoende: 2, bijna: 1, onvoldoende: 0 };
 
+  function computeOverallKey(attemptedVerdicts) {
+    if (!attemptedVerdicts.length) return "none";
+    const avg = attemptedVerdicts.reduce((s, v) => s + BAND_SCORE[v.bandKey], 0) / attemptedVerdicts.length;
+    if (avg >= 2.5) return "goed";
+    if (avg >= 1.6) return "voldoende";
+    if (avg >= 0.8) return "bijna";
+    return "onvoldoende";
+  }
+
   function renderBeoordeling() {
     const cont = $("#beoordelingContainer");
     cont.innerHTML = "";
@@ -477,12 +614,7 @@
     }
 
     // overall
-    const avg = attemptedVerdicts.reduce((s, v) => s + BAND_SCORE[v.bandKey], 0) / attemptedVerdicts.length;
-    let overallKey;
-    if (avg >= 2.5) overallKey = "goed";
-    else if (avg >= 1.6) overallKey = "voldoende";
-    else if (avg >= 0.8) overallKey = "bijna";
-    else overallKey = "onvoldoende";
+    const overallKey = computeOverallKey(attemptedVerdicts);
     const oBand = DATA.rubric.banden[overallKey];
 
     const overall = el("div", "verdict-overall");
@@ -573,6 +705,85 @@
   }
 
   /* ===================================================================
+     PDF / PRINT — beoordelingsrapport
+  =================================================================== */
+  function buildPrintReport() {
+    const root = $("#printRoot");
+    const verdicts = allGroupIds().map(groupVerdict);
+    const attempted = verdicts.filter(v => v.bandKey !== "none");
+    const datum = new Date().toLocaleDateString("nl-NL", { day: "numeric", month: "long", year: "numeric" });
+
+    let html =
+      '<div class="pr-doc">' +
+      '<div class="pr-head">' +
+        '<div><h1>CGI-oefenrapport</h1>' +
+        '<div class="pr-sub">Portfolio Oriënterende Stage</div></div>' +
+        '<div class="pr-meta">' +
+          '<div><b>' + esc(DATA.meta.student) + '</b> (' + esc(DATA.meta.studentnummer) + ')</div>' +
+          '<div>' + esc(DATA.meta.opleiding) + '</div>' +
+          '<div>' + esc(DATA.meta.organisatie) + '</div>' +
+          '<div>Gegenereerd: ' + esc(datum) + '</div>' +
+        '</div>' +
+      '</div>';
+
+    if (!attempted.length) {
+      html += '<p class="pr-note">Er zijn nog geen vragen geoefend. Oefen vragen en vink je modelpunten aan om een beoordeling te genereren.</p></div>';
+      root.innerHTML = html;
+      return;
+    }
+
+    const overallKey = computeOverallKey(attempted);
+    const oBand = DATA.rubric.banden[overallKey];
+    html +=
+      '<div class="pr-overall" style="border-color:' + oBand.kleur + '">' +
+        '<div class="pr-overall-top"><span class="pr-ol">Voorlopig eindoordeel</span>' +
+        '<span class="pr-band" style="background:' + oBand.kleur + '">' + esc(oBand.label) + '</span></div>' +
+        '<p>' + esc(oBand.advies) + '</p>' +
+        '<div class="pr-dims"><b>Beoordelingsdimensies (bijlage O):</b><ul>' +
+          DATA.rubric.dimensies.map(d => '<li><b>' + esc(d.naam) + '</b> — ' + esc(d.toelichting) + '</li>').join("") +
+        '</ul></div>' +
+      '</div>';
+
+    verdicts.forEach(v => {
+      const band = DATA.rubric.banden[v.bandKey];
+      const grp = groupById(v.gid);
+      html += '<div class="pr-card" style="border-left-color:' + lolColor(v.gid) + '">';
+      html += '<div class="pr-card-top"><h2>' + esc(lolLabel(v.gid)) + '</h2>' +
+              '<span class="pr-band" style="background:' + band.kleur + '">' + esc(band.label) + '</span></div>';
+      if (v.bandKey === "none") {
+        html += '<p class="pr-muted">' + esc(band.advies) + '</p></div>';
+        return;
+      }
+      html += '<div class="pr-stats">' + Math.round(v.coverage * 100) + '% kernpunten genoemd · ' +
+              v.attempted + '/' + v.total + ' vragen geoefend</div>';
+      html += '<p class="pr-advies">' + esc(band.advies) + '</p>';
+      if (v.strong.length) {
+        html += '<div class="pr-block"><b>Sterk onderbouwd:</b><ul>' +
+          v.strong.slice(0, 2).map(q => '<li>' + esc(shortQ(q.vraag)) + '</li>').join("") + '</ul></div>';
+      }
+      if (v.gaps.length) {
+        html += '<div class="pr-block"><b>Aandachtspunten (assessor vraagt door):</b><ul>' +
+          dedupeGaps(v.gaps).slice(0, 3).map(g => '<li>' + esc(g) + '</li>').join("") + '</ul></div>';
+      }
+      if (grp && grp.vervolgvraag) {
+        html += '<div class="pr-fu"><b>Vervolgvraag:</b> ' + esc(grp.vervolgvraag) + '</div>';
+      }
+      html += '</div>';
+    });
+
+    html += '<p class="pr-foot">Oefenindicatie op basis van zelf aangevinkte kernpunten — geen officieel cijfer. ' +
+            'Gegenereerd met de CGI-oefenomgeving.</p></div>';
+    root.innerHTML = html;
+  }
+
+  function downloadPdf() {
+    buildPrintReport();
+    document.body.classList.add("printing");
+    setTimeout(() => { window.print(); }, 60);
+  }
+  window.addEventListener("afterprint", () => document.body.classList.remove("printing"));
+
+  /* ===================================================================
      INIT
   =================================================================== */
   function init() {
@@ -593,6 +804,7 @@
     });
     renderOefen();
 
+    $("#btnPdf").addEventListener("click", downloadPdf);
     $("#btnStartSim").addEventListener("click", startSim);
     $("#btnSimNext").addEventListener("click", simNext);
     $("#btnSimPrev").addEventListener("click", simPrev);

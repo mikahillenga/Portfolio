@@ -120,6 +120,7 @@
             <select id="simLol"></select>
           </div>
         </div>
+        <label class="check-line"><input type="checkbox" id="simSpeak" /> 🔊 Spreekmodus: lees elke vraag hardop voor</label>
         <button class="btn btn-primary" id="btnStartSim">Start simulatie</button>
       </div>
 
@@ -142,7 +143,10 @@
 
     <!-- ===================== CGI-BEOORDELING ===================== -->
     <section class="view is-hidden" id="view-beoordeling">
-      <h2>Je CGI-beoordeling</h2>
+      <div class="beo-header">
+        <h2>Je CGI-beoordeling</h2>
+        <button class="btn btn-small btn-ghost" id="btnPdf">🖨️ Download als PDF</button>
+      </div>
       <p class="muted">
         Een assessor-oordeel per leeruitkomst, gebaseerd op de kernpunten die je per vraag aanvinkte als “genoemd”.
         Oefen eerst vragen (in <b>Oefenen</b> of de <b>CGI-simulatie</b>) en vink je modelpunten aan; ververs daarna deze pagina.
@@ -172,6 +176,9 @@
   <footer class="app-footer">
     <p>Oefenomgeving op basis van het ingeleverde portfolio. Je antwoorden en beoordelingen blijven lokaal in je browser (niets wordt verstuurd).</p>
   </footer>
+
+  <!-- Printbaar beoordelingsrapport (alleen zichtbaar bij printen/PDF) -->
+  <div id="printRoot" aria-hidden="true"></div>
 
   <script src="data.js"></script>
   <script src="app.js"></script>
