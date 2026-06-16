@@ -810,6 +810,25 @@
     return resolveVoice(k) || pickDutchVoice() || null;
   }
 
+  /* Laat de gekozen stem een kort voorbeeldzinnetje zeggen. */
+  function podPreviewVoice(speaker) {
+    const st = $("#podStatus");
+    if (!synth) { if (st) st.textContent = "Voorlezen wordt niet ondersteund in deze browser."; return; }
+    if (podPlaying) podPause();
+    stopSpeaking();
+    const v = podVoiceFor(speaker);
+    const sample = speaker === "N"
+      ? "Hoi, ik ben Noor, de host. Zo klink ik straks in de podcast."
+      : "En ik ben Mees, de coach. Met deze stem leg ik alles rustig uit.";
+    const u = new SpeechSynthesisUtterance(sample);
+    u.lang = "nl-NL";
+    if (v) u.voice = v;
+    u.rate = podRate;
+    u.pitch = 1.0;
+    synth.speak(u);
+    if (st) st.textContent = "Voorbeeld: " + (v ? v.name : "standaardstem");
+  }
+
   /* Vul de twee stemkeuze-menu's met de beschikbare browserstemmen (mooiste bovenaan). */
   function podPopulateVoices() {
     const selN = $("#podVoiceN"), selM = $("#podVoiceM");
@@ -1652,6 +1671,8 @@
       podVoiceSel.m = $("#podVoiceM").value; savePodVoices();
       if (podPlaying) { stopSpeaking(); podSpeakCurrent(); }
     });
+    $("#podTestN").addEventListener("click", () => podPreviewVoice("N"));
+    $("#podTestM").addEventListener("click", () => podPreviewVoice("M"));
 
     $("#btnPdf").addEventListener("click", downloadPdf);
     $("#btnStartSim").addEventListener("click", startSim);

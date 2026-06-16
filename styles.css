@@ -514,10 +514,16 @@ select:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
 .pod-voices { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-top: 14px; }
 .pod-voice-field { display: flex; flex-direction: column; gap: 5px; }
 .pod-voice-field label { font-size: .74rem; font-weight: 600; color: #e0e7ff; }
+.pod-voice-row { display: flex; gap: 8px; align-items: center; }
 .pod-voice-field select {
-  min-width: 200px; max-width: 260px; padding: 8px 30px 8px 10px; font-size: .85rem;
+  min-width: 190px; max-width: 240px; padding: 8px 30px 8px 10px; font-size: .85rem;
   background-color: rgba(255,255,255,.92); border: 1px solid rgba(255,255,255,.5); border-radius: var(--radius-sm);
 }
+.pod-voice-test {
+  flex: none; background: rgba(255,255,255,.16); color: #fff; border: 1px solid rgba(255,255,255,.5);
+  white-space: nowrap;
+}
+.pod-voice-test:hover { background: rgba(255,255,255,.3); }
 .pod-voice-hint { font-size: .76rem; color: #c7d2fe; flex: 1 1 100%; }
 .pod-status { margin-top: 10px; color: #e0e7ff; font-size: .82rem; min-height: 1em; }
 .pod-download { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.2); }
