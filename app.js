@@ -796,6 +796,55 @@
   let podLine = 0;
   let podRate = 1;
   let podBuilt = false;
+  let podIntroPlayed = false;
+
+  /* ---- Jingle (intro/outro) via Web Audio, geen audiobestand nodig ---- */
+  let podAudioCtx = null;
+  let jingleTimer = null;
+  let jingleNodes = [];
+
+  function ensureAudioCtx() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!podAudioCtx) podAudioCtx = new AC();
+    if (podAudioCtx.state === "suspended" && podAudioCtx.resume) { try { podAudioCtx.resume(); } catch (e) {} }
+    return podAudioCtx;
+  }
+  function stopJingle() {
+    if (jingleTimer) { clearTimeout(jingleTimer); jingleTimer = null; }
+    jingleNodes.forEach(n => { try { n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} });
+    jingleNodes = [];
+  }
+  function playJingle(kind, onDone) {
+    const ctx = ensureAudioCtx();
+    if (!ctx) { if (onDone) onDone(); return; } // geen Web Audio: sla jingle over
+    stopJingle();
+    const now = ctx.currentTime;
+    const master = ctx.createGain();
+    master.gain.value = 0.16;
+    master.connect(ctx.destination);
+    // [frequentie, starttijd, duur] — intro stijgt, outro lost rustig op
+    const intro = [[523.25, 0.00, 0.45], [659.25, 0.12, 0.45], [783.99, 0.24, 0.45], [1046.5, 0.36, 0.9]];
+    const outro = [[783.99, 0.00, 0.45], [659.25, 0.14, 0.45], [523.25, 0.28, 1.0], [392.00, 0.28, 1.0]];
+    const seq = kind === "intro" ? intro : outro;
+    let endT = 0;
+    seq.forEach(note => {
+      const freq = note[0], offset = note[1], dur = note[2];
+      const osc = ctx.createOscillator();
+      osc.type = "triangle";
+      osc.frequency.value = freq;
+      const g = ctx.createGain();
+      const t0 = now + offset;
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.9, t0 + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      osc.connect(g); g.connect(master);
+      osc.start(t0); osc.stop(t0 + dur + 0.05);
+      jingleNodes.push(osc, g);
+      endT = Math.max(endT, offset + dur);
+    });
+    jingleTimer = setTimeout(() => { jingleTimer = null; stopJingle(); if (onDone) onDone(); }, Math.ceil((endT + 0.12) * 1000));
+  }
 
   function loadPodVoices() { try { return JSON.parse(localStorage.getItem("cgi-pod-voices")) || {}; } catch (e) { return {}; } }
   let podVoiceSel = loadPodVoices();
@@ -815,6 +864,7 @@
     const st = $("#podStatus");
     if (!synth) { if (st) st.textContent = "Voorlezen wordt niet ondersteund in deze browser."; return; }
     if (podPlaying) podPause();
+    stopJingle();
     stopSpeaking();
     const v = podVoiceFor(speaker);
     const sample = speaker === "N"
@@ -888,6 +938,7 @@
       });
       podBuilt = true;
     }
+    podIntroPlayed = false;
     podPopulateVoices();
     renderPodTranscript();
     podHighlight();
@@ -944,7 +995,11 @@
     const h = pod.hoofdstukken[podChap];
     if (podLine < h.regels.length - 1) { podLine++; }
     else if (podChap < pod.hoofdstukken.length - 1) { podChap++; podLine = 0; }
-    else { podStop(); $("#podStatus").textContent = "Einde van de podcast. Mooi gedaan!"; return; }
+    else {
+      $("#podStatus").textContent = "🎵 Outro…";
+      playJingle("outro", () => { podStop(); $("#podStatus").textContent = "Einde van de podcast. Mooi gedaan!"; });
+      return;
+    }
     podSpeakCurrent();
   }
 
@@ -952,17 +1007,25 @@
     if (!synth) return;
     podPlaying = true;
     stopSpeaking();
-    podSpeakCurrent();
     podUpdateUi();
+    if (podChap === 0 && podLine === 0 && !podIntroPlayed) {
+      podIntroPlayed = true;
+      $("#podStatus").textContent = "🎵 Intro…";
+      playJingle("intro", () => { if (podPlaying) podSpeakCurrent(); });
+    } else {
+      podSpeakCurrent();
+    }
   }
   function podPause() {
     podPlaying = false;
+    stopJingle();
     stopSpeaking();
     podUpdateUi();
     $("#podStatus").textContent = "Gepauzeerd.";
   }
   function podStop() {
     podPlaying = false;
+    stopJingle();
     stopSpeaking();
     podUpdateUi();
   }
@@ -1615,7 +1678,10 @@
   /* ===================================================================
      INIT
   =================================================================== */
+  let inited = false;
   function init() {
+    if (inited) return;   // voorkom dubbel initialiseren (bv. een tweede DOMContentLoaded)
+    inited = true;
     renderHome();
     setupSttPanel();
     $$("[data-view]").forEach(b => b.addEventListener("click", () => showView(b.dataset.view)));
