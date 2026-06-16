@@ -246,7 +246,11 @@ def render_pyttsx3(lines):
 # --------------------------------------------------------------------------
 # edge-tts / gtts (MP3-native, online)
 # --------------------------------------------------------------------------
-EDGE_DEFAULT_N = "nl-NL-FennaNeural"
+# Natuurlijk klinkend Nederlands duo (Microsoft/Azure neuraal):
+#   host Noor  -> Colette (warme vrouwenstem)
+#   coach Mees -> Maarten (rustige mannenstem)
+# Vlaams alternatief: nl-BE-DenaNeural + nl-BE-ArnaudNeural
+EDGE_DEFAULT_N = "nl-NL-ColetteNeural"
 EDGE_DEFAULT_M = "nl-NL-MaartenNeural"
 MP3_RATE = 24000  # edge-tts levert 24 kHz mono
 

@@ -80,7 +80,8 @@ Zet in de app het server-type op **OpenAI-compatible** en de URL op
 In het **Podcast**-tabblad kies je per host (Noor en Mees) een stem uit de lijst; de app zet automatisch
 de mooiste beschikbare Nederlandse stem voorop. De kwaliteit hangt af van je browser/systeem:
 
-- **Edge** heeft de mooiste stemmen: kies een **“Natural”/“Online”**-stem (bijv. *Fenna*, *Maarten*, *Colette*).
+- **Edge** heeft de minst robotachtige stemmen (Microsoft/Azure neuraal): kies een **“Natural”/“Online”**-stem.
+  Aanbevolen duo: **Colette** (host Noor) + **Maarten** (coach Mees); Vlaams alternatief **Dena** + **Arnaud**.
 - **Chrome** heeft *Google Nederlands* (prima kwaliteit).
 - Op **Windows/macOS** kun je in de systeeminstellingen extra Nederlandse stemmen bijinstalleren; die
   verschijnen dan vanzelf in de lijst.
@@ -108,12 +109,18 @@ Piper is een neuraal tekst-naar-spraak-model dat je één keer downloadt (~30-60
 offline draait. `--download-voice` haalt standaard `nl_BE-nathalie-medium` op; met `--download-voice-m`
 haal je ook een tweede (mannelijke) stem voor coach Mees. `lameenc` zorgt voor de MP3-export.
 
-**Of online (ook mooi, twee neurale stemmen):**
+**Minst robotachtig — neurale stemmen (edge-tts, aanrader voor natuurlijke klank):**
 
 ```bash
 pip install edge-tts
 python tools/podcast_tts.py podcast-script.txt -o podcast.mp3
 ```
+
+Het standaardduo is **`nl-NL-ColetteNeural`** (host Noor) + **`nl-NL-MaartenNeural`** (coach Mees) — de meest
+natuurlijke gratis Nederlandse stemmen. Liever Vlaams? Voeg toe:
+`--voice-n nl-BE-DenaNeural --voice-m nl-BE-ArnaudNeural`. Wil je studiokwaliteit en heb je een GPU? Dan
+zijn **Coqui XTTS-v2** of **ElevenLabs** (betaald) nog natuurlijker, maar voor een studiepodcast is edge-tts
+de beste prijs-kwaliteitskeuze.
 
 - Geen internet en geen Piper? Gebruik `--engine pyttsx3` voor een volledig **offline** systeemstem
   (robotachtiger; schrijft WAV).

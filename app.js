@@ -885,8 +885,17 @@
     if (!selN || !selM) return;
     const sorted = dutchVoicesSorted();
     const nl = sorted.nl, rest = sorted.rest;
-    if (!podVoiceSel.n && nl[0]) podVoiceSel.n = voiceKey(nl[0]);
-    if (!podVoiceSel.m) podVoiceSel.m = voiceKey(nl[1] || nl[0] || rest[0]);
+    // Standaard een natuurlijk duo: warme vrouwenstem (host) + mannenstem (coach).
+    if (!podVoiceSel.n || !podVoiceSel.m) {
+      const pool = nl.length ? nl : rest;
+      const femaleRe = /colette|fenna|dena|arabella|lisa|female|vrouw/i;
+      const maleRe = /maarten|arnaud|barend|robbe|xander|male|\bman\b/i;
+      const host = pool.find(v => femaleRe.test(v.name)) || pool[0];
+      const coach = pool.find(v => maleRe.test(v.name) && voiceKey(v) !== voiceKey(host || {}))
+        || pool.find(v => voiceKey(v) !== voiceKey(host || {})) || host;
+      if (!podVoiceSel.n && host) podVoiceSel.n = voiceKey(host);
+      if (!podVoiceSel.m && coach) podVoiceSel.m = voiceKey(coach);
+    }
 
     function fill(sel, current) {
       sel.innerHTML = "";
