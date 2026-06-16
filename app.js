@@ -671,11 +671,13 @@
     const opts = el("div", "mc-opts");
     const letters = ["A", "B", "C", "D", "E", "F"];
     const buttons = [];
-    q.opties.forEach((opt, i) => {
+    // antwoordvolgorde per beurt schudden zodat het juiste antwoord niet vast op plek A staat
+    const order = shuffle(q.opties.map((_, i) => i));
+    order.forEach((oi, k) => {
       const b = el("button", "mc-opt");
-      b.innerHTML = '<span class="mc-letter">' + letters[i] + '</span><span class="mc-opt-txt">' + esc(opt) + '</span>';
-      b.addEventListener("click", () => answerMc(i, buttons, q));
-      buttons.push(b);
+      b.innerHTML = '<span class="mc-letter">' + letters[k] + '</span><span class="mc-opt-txt">' + esc(q.opties[oi]) + '</span>';
+      b.addEventListener("click", () => answerMc(oi, buttons, q));
+      buttons.push({ btn: b, oi: oi });
       opts.appendChild(b);
     });
     card.appendChild(opts);
@@ -688,19 +690,19 @@
     updateMcBar();
   }
 
-  function answerMc(optIdx, buttons, q) {
+  function answerMc(chosenOi, buttons, q) {
     if (mcAnswered) return;
     mcAnswered = true;
-    const correct = optIdx === q.correct;
+    const correct = chosenOi === q.correct;
     if (correct) mcScore++; else mcWrong.push(q.id);
     mcDone++;
     getEntry(q.id).mc = correct;
     saveStore(store);
 
-    buttons.forEach((b, i) => {
-      b.disabled = true;
-      if (i === q.correct) b.classList.add("mc-correct");
-      if (i === optIdx && !correct) b.classList.add("mc-wrong");
+    buttons.forEach(item => {
+      item.btn.disabled = true;
+      if (item.oi === q.correct) item.btn.classList.add("mc-correct");
+      if (item.oi === chosenOi && !correct) item.btn.classList.add("mc-wrong");
     });
 
     const fb = $("#mcStage .mc-feedback");
@@ -899,6 +901,8 @@
   function renderVoortgang() {
     const cont = $("#voortgangContainer");
     cont.innerHTML = "";
+
+    cont.appendChild(el("h3", "beo-section-title", "Zelfbeoordeling — open vragen"));
     allGroupIds().forEach(gid => {
       const qs = DATA.vragen.filter(q => q.lol === gid);
       if (!qs.length) return;
@@ -925,6 +929,34 @@
           '<span><span class="dot ok"></span>Voldoende: ' + ok + '</span>' +
           '<span><span class="dot bad"></span>Onvoldoende: ' + bad + '</span>' +
           '<span><span class="dot none"></span>Open: ' + (total - rated) + '</span>' +
+        '</div>';
+      cont.appendChild(card);
+    });
+
+    // ---- Meerkeuze-quiz voortgang ----
+    cont.appendChild(el("h3", "beo-section-title", "Meerkeuze-quiz"));
+    const qvs = allGroupIds().map(quizVerdict);
+    if (!qvs.some(v => v.answered > 0)) {
+      cont.appendChild(el("div", "empty", "Nog geen meerkeuzevragen beantwoord. Ga naar <b>Meerkeuze</b> om je kennis te toetsen."));
+      return;
+    }
+    qvs.forEach(v => {
+      const total = v.total;
+      const wrong = v.answered - v.correct;
+      const pct = n => total ? (n / total * 100) + "%" : "0%";
+      const card = el("div", "prog-card");
+      card.style.setProperty("--lolc", lolColor(v.gid));
+      card.innerHTML =
+        '<div class="prog-top"><h3>' + esc(lolLabel(v.gid)) + '</h3>' +
+        '<span class="prog-count">' + v.correct + ' goed · ' + v.answered + ' / ' + total + ' beantwoord</span></div>' +
+        '<div class="bar">' +
+          '<span class="b-good" style="width:' + pct(v.correct) + '"></span>' +
+          '<span class="b-bad" style="width:' + pct(wrong) + '"></span>' +
+        '</div>' +
+        '<div class="prog-legend">' +
+          '<span><span class="dot good"></span>Goed: ' + v.correct + '</span>' +
+          '<span><span class="dot bad"></span>Fout: ' + wrong + '</span>' +
+          '<span><span class="dot none"></span>Nog niet: ' + (total - v.answered) + '</span>' +
         '</div>';
       cont.appendChild(card);
     });

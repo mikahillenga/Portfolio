@@ -20,11 +20,11 @@ Werkt offline. Je antwoorden en zelfbeoordelingen worden alleen lokaal in je bro
 | **Start** | Overzicht van de vijf leeruitkomsten + algemene CGI-tips. |
 | **Oefenen** | Filter op leeruitkomst en vraagtype. Beantwoord (typ of hardop), klap de **modelpunten** uit en **vink aan** welke kernpunten je noemde. Beoordeel jezelf (onvoldoende / voldoende / goed). |
 | **Flashcards** | Vraag op de voorkant, het **sterke antwoord** (kernpunten) op de achterkant. Beantwoord eerst zelf, klik om de kaart om te draaien, en markeer **Ken ik / Nog oefenen**. Met schudden, filteren en *Verberg gekende*. Sneltoetsen: **spatie** = omdraaien, **←/→** = bladeren. |
-| **Meerkeuze** | Kennisquiz met **antwoordopties** (40 vragen): kies het juiste antwoord en krijg meteen feedback met toelichting. Filter per leeruitkomst, schud, en oefen aan het eind gericht **de foute vragen opnieuw**. Houdt je score bij. |
+| **Meerkeuze** | Kennisquiz met **antwoordopties** (40 vragen): kies het juiste antwoord en krijg meteen feedback met toelichting. De **antwoordvolgorde wordt geschud** (het juiste antwoord staat dus niet steeds op plek A). Filter per leeruitkomst, schud, en oefen aan het eind gericht **de foute vragen opnieuw**. Houdt je score bij. |
 | **CGI-simulatie** | Een reeks willekeurige vragen met een **lopende timer**, net als in een echt gesprek. Kies aantal vragen, zwaarte en eventueel één leeruitkomst. Zet **spreekmodus** aan om elke vraag automatisch te laten voorlezen. |
 | **CGI-beoordeling** | **Twee losse beoordelingen**: (1) het CGI-oordeel op basis van de kernpunten die je bij de open vragen aanvinkte (per leeruitkomst, met sterke/zwakke punten en een vervolgvraag) en een eindoordeel langs de vier dimensies, en (2) een aparte **kennisquiz-beoordeling** op basis van je meerkeuze-score per leeruitkomst. Beide ook in de PDF. |
 | **Spiekbriefje** | Kerncijfers en feiten uit je stage (organisatie, onderzoek, methoden, POP) om je geheugen te checken. |
-| **Voortgang** | Per leeruitkomst zie je hoeveel vragen je oefende en hoe je jezelf beoordeelde. |
+| **Voortgang** | Per leeruitkomst zie je je **zelfbeoordeling** van de open vragen én je **meerkeuze-quizscore** (goed/fout/nog niet gedaan). |
 
 ## Hoe werkt het oordeel?
 
