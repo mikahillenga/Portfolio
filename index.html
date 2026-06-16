@@ -312,10 +312,15 @@
           <details class="pod-mp3-help">
             <summary>🎧 Hoe maak ik er een MP3 van?</summary>
             <div class="pod-mp3-body">
-              <p>De browser kan zelf geen audiobestand opslaan. Met het meegeleverde bruggetje maak je van het script één MP3 met echte Nederlandse stemmen:</p>
+              <p>De browser kan zelf geen audiobestand opslaan. Met het meegeleverde bruggetje maak je van het script één MP3, met automatische pauzes tussen de hoofdstukken.</p>
+              <p><b>Aanrader — mooie stem, volledig offline (Piper):</b></p>
+              <pre>pip install piper-tts lameenc
+python tools/podcast_tts.py --download-voice
+python tools/podcast_tts.py podcast-script.txt --engine piper -o podcast.mp3</pre>
+              <p><b>Of online (ook mooi, twee stemmen):</b></p>
               <pre>pip install edge-tts
 python tools/podcast_tts.py podcast-script.txt -o podcast.mp3</pre>
-              <p class="muted">Download eerst het script met de knop hierboven. <code>edge-tts</code> geeft de mooiste stemmen (twee verschillende, één per host) en heeft internet nodig. Geen internet? Gebruik <code>--engine pyttsx3</code> voor een volledig offline (robotachtigere) variant.</p>
+              <p class="muted">Download eerst het script met de knop hierboven. Pauzes regel je met <code>--chapter-gap</code> en <code>--line-gap</code>. Met <code>--list-voices</code> zie je alle Nederlandse Piper-stemmen.</p>
             </div>
           </details>
         </div>

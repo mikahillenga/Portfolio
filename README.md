@@ -81,19 +81,31 @@ In het **Podcast**-tabblad kun je de samenvatting direct in de browser laten voo
 echt **MP3-bestand** van (bijv. om in je telefoon te zetten), dan maakt het meegeleverde bruggetje dat:
 
 1. Klik in de speler op **⬇ Download script (.txt)** — je krijgt `podcast-script.txt`.
-2. Maak er een MP3 van:
+2. Maak er een MP3 van. Tussen de hoofdstukken komen automatisch pauzes.
+
+**Aanrader — mooie stem, volledig offline (Piper):**
+
+```bash
+pip install piper-tts lameenc
+python tools/podcast_tts.py --download-voice            # haalt één keer een NL-stem op
+python tools/podcast_tts.py podcast-script.txt --engine piper -o podcast.mp3
+```
+
+Piper is een neuraal tekst-naar-spraak-model dat je één keer downloadt (~30-60 MB) en daarna volledig
+offline draait. `--download-voice` haalt standaard `nl_BE-nathalie-medium` op; met `--download-voice-m`
+haal je ook een tweede (mannelijke) stem voor coach Mees. `lameenc` zorgt voor de MP3-export.
+
+**Of online (ook mooi, twee neurale stemmen):**
 
 ```bash
 pip install edge-tts
 python tools/podcast_tts.py podcast-script.txt -o podcast.mp3
 ```
 
-- **`edge-tts`** (aanbevolen) gebruikt mooie Nederlandse neurale stemmen — twee verschillende, één per
-  host — en levert direct een MP3. Het heeft internet nodig.
-- Geen internet? Gebruik `--engine pyttsx3` voor een volledig **offline** (robotachtigere) variant; die
-  schrijft een WAV-bestand.
-- `python tools/podcast_tts.py --list-voices` toont de beschikbare Nederlandse stemmen, die je met
-  `--voice-n` en `--voice-m` kunt kiezen.
+- Geen internet en geen Piper? Gebruik `--engine pyttsx3` voor een volledig **offline** systeemstem
+  (robotachtiger; schrijft WAV).
+- Pauzes instellen: `--chapter-gap 1.0` (seconden tussen hoofdstukken) en `--line-gap 0.25` (tussen zinnen).
+- `python tools/podcast_tts.py --list-voices` toont de beschikbare Nederlandse Piper-stemmen.
 
 ## PDF-rapport
 
