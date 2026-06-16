@@ -689,6 +689,219 @@ const CGI_DATA = {
   ],
 
   /* ------------------------------------------------------------------
+     Meerkeuzevragen (kennischeck) — één juist antwoord per vraag
+  ------------------------------------------------------------------ */
+  mcVragen: [
+
+    /* ---- LOL 1 ---- */
+    {
+      id: "mc-l1-1", lol: "lol1",
+      vraag: "Welke methode gebruikte je als leidende structuur voor het verbetertraject op afdeling 3B?",
+      opties: ["De A3-methode (7 stappen)", "De DMAIC-cyclus", "Een SWOT-analyse", "De watervalmethode"],
+      correct: 0,
+      uitleg: "De A3-methode dwingt je eerst het probleem en de huidige situatie scherp te krijgen, vóór je een doel en maatregelen bepaalt."
+    },
+    {
+      id: "mc-l1-2", lol: "lol1",
+      vraag: "Waarvoor gebruikte je de PICK-matrix bij het OK-leeninstrumentariumproces?",
+      opties: ["Verbeterpunten prioriteren op impact vs. inspanning", "De financiële haalbaarheid berekenen", "De afdelingscultuur in kaart brengen", "De patiëntveiligheid scoren"],
+      correct: 0,
+      uitleg: "Met de PICK-matrix onderbouwde je dat het vastleggen van de aanvraagtermijn de meeste winst oplevert met de minste inspanning."
+    },
+    {
+      id: "mc-l1-3", lol: "lol1",
+      vraag: "Welke combinatie van modellen gebruikte je voor de organisatieanalyse (bijlage H)?",
+      opties: ["DESTEP, het 7S-model en SWOT", "Porter's Five Forces, BCG en Ansoff", "Kotter, ADKAR en Lewin", "PDCA, KATA en Six Sigma"],
+      correct: 0,
+      uitleg: "DESTEP voor de externe omgeving, het 7S-model van McKinsey voor de interne organisatie, samengebracht in een SWOT."
+    },
+    {
+      id: "mc-l1-4", lol: "lol1",
+      vraag: "Welke KPI's zijn voor Bureau Procesverbetering en Projecten relevant (bijlage N)?",
+      opties: ["Projectvoortgang, plus ligduur op 3A/3B en OK-benutting", "Omzet per medisch specialist", "Het aantal parkeerplaatsen", "Patiënttevredenheid over het eten"],
+      correct: 0,
+      uitleg: "BPP draagt indirect bij: het stuurt op projectvoortgang, met outcome-KPI's ligduur en OK-benutting gekoppeld aan de KSF's."
+    },
+
+    /* ---- LOL 2 ---- */
+    {
+      id: "mc-l2-1", lol: "lol2",
+      vraag: "Hoeveel zorghandelingen registreerde je tijdens je observatieonderzoek?",
+      opties: ["215 handelingen", "26 handelingen", "49 handelingen", "120 handelingen"],
+      correct: 0,
+      uitleg: "In 26 observaties (op 3A, 3B en 2B) registreerde je in totaal 215 zorghandelingen."
+    },
+    {
+      id: "mc-l2-2", lol: "lol2",
+      vraag: "Welk deel van de zorg bij verkeerde-bed patiënten was voorbehouden aan een verpleegkundige?",
+      opties: ["Ongeveer 9%", "Ongeveer 31%", "Ongeveer 49%", "Ongeveer 80%"],
+      correct: 0,
+      uitleg: "Slechts 9% was voorbehouden (zoals katheteriseren, blaasspoelen, wondzorg, insuline); de rest was grotendeels laagcomplex."
+    },
+    {
+      id: "mc-l2-3", lol: "lol2",
+      vraag: "Hoe kwam je aan het cijfer van 49% laagcomplexe zorg?",
+      opties: ["ADL (31%) en mobiliteit (18%) samen", "Het aantal patiënten gedeeld door het aantal bedden", "Een schatting van de afdelingsmanager", "Een getal uit het jaardocument"],
+      correct: 0,
+      uitleg: "ADL-zorg (31%) en mobiliteitsondersteuning (18%) vormden samen bijna de helft van alle geregistreerde handelingen."
+    },
+    {
+      id: "mc-l2-4", lol: "lol2",
+      vraag: "Welke beperking van je observatieonderzoek benoemde je zelf eerlijk?",
+      opties: ["Alleen dagdiensten, en de geplande interviews waren nog niet uitgevoerd", "Er waren te veel observatoren", "De data kwam van een ander ziekenhuis", "Er werd alleen 's nachts geobserveerd"],
+      correct: 0,
+      uitleg: "Door beperkingen zelf te benoemen, zet je de uitkomsten in het juiste licht (geen overclaiming)."
+    },
+    {
+      id: "mc-l2-5", lol: "lol2",
+      vraag: "Welke meetlat gebruikte je om te bepalen of een verzorgende een handeling mag uitvoeren?",
+      opties: ["De OZG-functiebeschrijvingen (Verpleegkundige I/J en ziekenverzorgende)", "Je eigen inschatting", "Een enquête onder patiënten", "De landelijke CAO ziekenhuizen"],
+      correct: 0,
+      uitleg: "Door de functiebeschrijvingen als meetlat te gebruiken, werd je oordeel controleerbaar in plaats van een mening."
+    },
+
+    /* ---- LOL 3 ---- */
+    {
+      id: "mc-l3-1", lol: "lol3",
+      vraag: "Welke modellen gebruikte je in de AFAS-haalbaarheidsstudie?",
+      opties: ["Value Proposition Canvas en de 8 stappen van Kotter", "SWOT en DESTEP", "PICK-matrix en A3", "Belbin en de Big Five"],
+      correct: 0,
+      uitleg: "Het Value Proposition Canvas voor de waardebepaling en de acht stappen van Kotter als kapstok voor succesfactoren en uitdagingen."
+    },
+    {
+      id: "mc-l3-2", lol: "lol3",
+      vraag: "Wat hield je concrete pilotvoorstel voor afdeling 3B in?",
+      opties: ["Clustering van 5 bedden, hybride inzet en escalatiecriteria", "Volledige nieuwbouw van de afdeling", "Het ontslaan van verpleegkundigen", "Alleen extra bedden bijplaatsen"],
+      correct: 0,
+      uitleg: "Een pilot met 5 geclusterde bedden, een hybride personele inzet en vaste werkafspraken met escalatiecriteria."
+    },
+    {
+      id: "mc-l3-3", lol: "lol3",
+      vraag: "Welk pijnpunt loste AFAS ERP op volgens de waardepropositie?",
+      opties: ["Handmatige fouten, dubbele invoer en geen totaaloverzicht", "Te weinig parkeerplaatsen", "Een tekort aan operatiekamers", "Te hoge inkoopprijzen van medicijnen"],
+      correct: 0,
+      uitleg: "AFAS koppelt processen aan elkaar en geeft via één gedeeld platform het gewenste overzicht."
+    },
+    {
+      id: "mc-l3-4", lol: "lol3",
+      vraag: "Wat was de kern van je conceptidee bij de heropening van de Neurologie?",
+      opties: ["Laagcomplexe huisartsverwijzingen terugdringen/filteren", "Meer neurologen aannemen", "De afdeling sluiten", "Alle patiënten doorsturen naar het UMCG"],
+      correct: 0,
+      uitleg: "Laagcomplexe klachten (zoals aspecifieke lage rugpijn) kunnen vaak in de eerste lijn, wat de druk op de specialistische zorg verlaagt."
+    },
+
+    /* ---- LOL 4 ---- */
+    {
+      id: "mc-l4-1", lol: "lol4",
+      vraag: "Hoe bracht je het gevoelige idee om een verzorgende in te zetten?",
+      opties: ["Als 'mogelijkheid onder onderzoek', niet als vaststaand besluit", "Als een al genomen besluit van de directie", "Door het niet met het team te bespreken", "Via een anonieme memo"],
+      correct: 0,
+      uitleg: "Door het als onderzoek te framen bleef het gesprek open en raakten betrokkenen aangehaakt in plaats van overvallen."
+    },
+    {
+      id: "mc-l4-2", lol: "lol4",
+      vraag: "Welk model gebruikte je in de verandermanagement-opdracht (bijlage J)?",
+      opties: ["Het kleurenmodel van De Caluwé & Vermaak", "De BCG-matrix", "Het INK-managementmodel", "SERVQUAL"],
+      correct: 0,
+      uitleg: "Het herstelplan is 'blauw' ingestoken, terwijl de gewenste verandering vooral 'groen' gedrag vraagt."
+    },
+    {
+      id: "mc-l4-3", lol: "lol4",
+      vraag: "Wat is volgens je verandermanagement-analyse de grootste 'gap' bij het OZG?",
+      opties: ["Cultuur en gedrag", "Structuur", "Competenties", "De financiële positie"],
+      correct: 0,
+      uitleg: "Structuur en competenties zijn met formats en training te overbruggen; de cultuuromslag kost tijd en consistent voorbeeldgedrag."
+    },
+    {
+      id: "mc-l4-4", lol: "lol4",
+      vraag: "Met wie bracht je de supply chain van leeninstrumentarium op de OK in kaart?",
+      opties: ["Harmina Fischer-Danker en Sonja Tien", "Mariska Bouwman en Joanne Oelen", "Corien Blokzijl van P&O", "Joukje Punter-Boonstra"],
+      correct: 0,
+      uitleg: "Met hun kennis van binnenuit bracht je de stappen, partijen en risico's in kaart; Sonja prees je interactieve waardestroommapping."
+    },
+
+    /* ---- LOL 5 ---- */
+    {
+      id: "mc-l5-1", lol: "lol5",
+      vraag: "Wat was de kern van de feedback op je conceptverdiepende opdracht?",
+      opties: ["Doel te oplossingsgericht, stappen te globaal, 5x-waarom een opsomming", "Het stuk was te lang en te gedetailleerd", "Vooral spelling- en taalfouten", "Er was geen bronvermelding nodig"],
+      correct: 0,
+      uitleg: "Je verwerkte deze feedback in de definitieve versie (bijlage A), zichtbaar via het feedbackformulier (bijlage B)."
+    },
+    {
+      id: "mc-l5-2", lol: "lol5",
+      vraag: "Wat herkende je als je rode draad en belangrijkste ontwikkelpunt?",
+      opties: ["Te snel naar een oplossing willen springen", "Te weinig zelfvertrouwen", "Moeite met cijfers en data", "Te weinig initiatief nemen"],
+      correct: 0,
+      uitleg: "Dit liep als rode draad door al je leerdoelen; je houdt het nu staan als een bewust onderhouden gewoonte."
+    },
+    {
+      id: "mc-l5-3", lol: "lol5",
+      vraag: "Welk leermoment had je tijdens het meelopen op de OK?",
+      opties: ["Je had moeten vragen of je mocht meeschrijven", "Je had de operatie zelf moeten uitvoeren", "Je had helemaal niet moeten meelopen", "Je had de chirurg moeten corrigeren"],
+      correct: 0,
+      uitleg: "Daar had je meer persoonlijk leiderschap kunnen tonen door gewoon te vragen wat wel en niet mocht."
+    },
+
+    /* ---- Portfolio-breed ---- */
+    {
+      id: "mc-alg-1", lol: "alg",
+      vraag: "Wat is een 'verkeerde-bed patiënt'?",
+      opties: [
+        "Iemand die medisch is uitbehandeld maar wacht op een plek in een verpleeghuis of revalidatiecentrum",
+        "Een patiënt die per ongeluk in een ander bed is gelegd",
+        "Een patiënt die te lang op de operatiewachtlijst staat",
+        "Een patiënt die in het verkeerde ziekenhuis ligt"
+      ],
+      correct: 0,
+      uitleg: "Het OZG heeft er dagelijks 6 tot 12, verspreid over meerdere afdelingen."
+    },
+    {
+      id: "mc-alg-2", lol: "alg",
+      vraag: "Wat was volgens je 5x-waarom-analyse de grondoorzaak van de inefficiëntie?",
+      opties: [
+        "Het ontbreken van een formeel functieprofiel voor een verzorgende op een verpleegafdeling",
+        "Een tekort aan bedden op 3B",
+        "Onvoldoende inzet van de verpleegkundigen",
+        "Een tekort aan artsen"
+      ],
+      correct: 0,
+      uitleg: "Daardoor blijft de personele inzet hetzelfde en wordt de zorg georganiseerd alsof het gewone klinische patiënten zijn."
+    },
+    {
+      id: "mc-alg-3", lol: "alg",
+      vraag: "Welk onderscheid bepaalt welke taken je aan een verzorgende mag delegeren?",
+      opties: ["Verzorgende niveau 3 versus verzorgende IG niveau 3", "Leeftijd van de verzorgende", "Vast versus tijdelijk contract", "Dag- versus nachtdienst"],
+      correct: 0,
+      uitleg: "Een verzorgende IG heeft in de praktijk een ruimer deskundigheidsgebied; de inzet hangt af van diploma, bevoegdheid en beleid."
+    },
+    {
+      id: "mc-alg-4", lol: "alg",
+      vraag: "Wanneer kan de ondernemingsraad instemmingsrecht hebben bij de inzet van een verzorgende?",
+      opties: [
+        "Bij personele regelingen of een (gewijzigd) functiewaarderingssysteem",
+        "Bij de aankoop van kantoorbenodigdheden",
+        "Nooit, de OR heeft hierin geen enkele rol",
+        "Alleen bij het ontslag van de raad van bestuur"
+      ],
+      correct: 0,
+      uitleg: "Daarom is medezeggenschap een randvoorwaarde vooraf, belegd via de P&O-werklijn, niet een struikelblok achteraf."
+    },
+    {
+      id: "mc-alg-5", lol: "alg",
+      vraag: "Welke vakken/minor koos je voor volgend studiejaar (bijlage Q)?",
+      opties: [
+        "Semester 'Organiseren voor de Toekomst' + minor 'Veranderen van Organisaties'",
+        "Een minor Financial Management",
+        "Een uitwisseling in het buitenland",
+        "De minor Data Science & AI"
+      ],
+      correct: 0,
+      uitleg: "Die keuze past bij je richting: verandermanagement en omgaan met weerstand, plus diepgaander onderzoek en datavaardigheden."
+    }
+  ],
+
+  /* ------------------------------------------------------------------
      Spiekbriefje — kernfeiten uit je stage (om je geheugen te checken)
   ------------------------------------------------------------------ */
   feiten: [

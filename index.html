@@ -21,6 +21,7 @@
         <button class="nav-btn is-active" data-view="home">Start</button>
         <button class="nav-btn" data-view="oefenen">Oefenen</button>
         <button class="nav-btn" data-view="flashcards">Flashcards</button>
+        <button class="nav-btn" data-view="meerkeuze">Meerkeuze</button>
         <button class="nav-btn" data-view="simulatie">CGI-simulatie</button>
         <button class="nav-btn" data-view="beoordeling">CGI-beoordeling</button>
         <button class="nav-btn" data-view="spiekbriefje">Spiekbriefje</button>
@@ -185,6 +186,35 @@
         <button class="btn btn-small flash-known" id="flashKnown">✓ Ken ik</button>
       </div>
       <div class="flash-progress muted" id="flashProgress"></div>
+    </section>
+
+    <!-- ===================== MEERKEUZE ===================== -->
+    <section class="view is-hidden" id="view-meerkeuze">
+      <div class="toolbar">
+        <div class="toolbar-group">
+          <label for="mcLol">Leeruitkomst</label>
+          <select id="mcLol"></select>
+        </div>
+        <div class="toolbar-group toolbar-spacer">
+          <button class="btn btn-small" id="mcShuffle">🔀 Schud</button>
+          <button class="btn btn-small btn-ghost" id="mcRestart">↺ Opnieuw</button>
+        </div>
+      </div>
+
+      <p class="muted mc-intro">Kies het juiste antwoord. Je krijgt meteen te zien of het goed is, met een korte toelichting.</p>
+
+      <div class="mc-bar">
+        <span id="mcProgress">Vraag 1 / 1</span>
+        <span id="mcScore" class="mc-score">Goed: 0 / 0</span>
+      </div>
+
+      <div id="mcStage"><!-- vraag via JS --></div>
+
+      <div class="mc-controls">
+        <button class="btn btn-primary" id="mcNext" disabled>Volgende →</button>
+      </div>
+
+      <div id="mcResult" class="mc-result is-hidden"><!-- eindscore via JS --></div>
     </section>
 
     <!-- ===================== SIMULATIE ===================== -->

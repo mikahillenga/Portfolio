@@ -322,6 +322,7 @@
     $$(".nav-btn").forEach(b => b.classList.toggle("is-active", b.dataset.view === name));
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (name === "flashcards") renderFlashcards();
+    if (name === "meerkeuze") renderMeerkeuze();
     if (name === "spiekbriefje") renderFacts();
     if (name === "voortgang") renderVoortgang();
     if (name === "beoordeling") renderBeoordeling();
@@ -615,6 +616,150 @@
     if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggleFlip(); }
     else if (e.key === "ArrowRight") { e.preventDefault(); flashNext(); }
     else if (e.key === "ArrowLeft") { e.preventDefault(); flashPrev(); }
+  }
+
+  /* ===================================================================
+     MEERKEUZE (kennisquiz)
+  =================================================================== */
+  let mcDeck = [];
+  let mcIdx = 0;
+  let mcAnswered = false;
+  let mcScore = 0;
+  let mcDone = 0;
+  let mcWrong = [];
+
+  function buildMcDeck() {
+    const lol = $("#mcLol").value;
+    mcDeck = DATA.mcVragen.filter(q => lol === "all" || q.lol === lol);
+  }
+
+  function renderMeerkeuze() {
+    buildMcDeck();
+    mcIdx = 0; mcScore = 0; mcDone = 0; mcWrong = [];
+    $("#mcResult").classList.add("is-hidden");
+    $("#mcStage").style.display = "";
+    document.querySelector(".mc-controls").style.display = "";
+    document.querySelector("#view-meerkeuze .mc-bar").style.display = "";
+    showMcQuestion();
+  }
+
+  function showMcQuestion() {
+    const stage = $("#mcStage");
+    stage.innerHTML = "";
+    mcAnswered = false;
+    const nextBtn = $("#mcNext");
+    nextBtn.disabled = true;
+
+    if (!mcDeck.length) {
+      stage.appendChild(el("div", "empty", "Geen meerkeuzevragen voor deze selectie."));
+      updateMcBar();
+      return;
+    }
+
+    const q = mcDeck[mcIdx];
+    const card = el("div", "mc-card");
+
+    const head = el("div", "q-head");
+    const lolTag = el("span", "tag tag-lol", esc(lolLabel(q.lol)));
+    lolTag.style.background = lolColor(q.lol);
+    head.appendChild(lolTag);
+    head.appendChild(el("span", "tag tag-kennis", "Kennisvraag"));
+    card.appendChild(head);
+
+    card.appendChild(el("p", "mc-q", esc(q.vraag)));
+
+    const opts = el("div", "mc-opts");
+    const letters = ["A", "B", "C", "D", "E", "F"];
+    const buttons = [];
+    q.opties.forEach((opt, i) => {
+      const b = el("button", "mc-opt");
+      b.innerHTML = '<span class="mc-letter">' + letters[i] + '</span><span class="mc-opt-txt">' + esc(opt) + '</span>';
+      b.addEventListener("click", () => answerMc(i, buttons, q));
+      buttons.push(b);
+      opts.appendChild(b);
+    });
+    card.appendChild(opts);
+
+    const fb = el("div", "mc-feedback");
+    fb.hidden = true;
+    card.appendChild(fb);
+
+    stage.appendChild(card);
+    updateMcBar();
+  }
+
+  function answerMc(optIdx, buttons, q) {
+    if (mcAnswered) return;
+    mcAnswered = true;
+    const correct = optIdx === q.correct;
+    if (correct) mcScore++; else mcWrong.push(q.id);
+    mcDone++;
+    getEntry(q.id).mc = correct;
+    saveStore(store);
+
+    buttons.forEach((b, i) => {
+      b.disabled = true;
+      if (i === q.correct) b.classList.add("mc-correct");
+      if (i === optIdx && !correct) b.classList.add("mc-wrong");
+    });
+
+    const fb = $("#mcStage .mc-feedback");
+    fb.hidden = false;
+    fb.className = "mc-feedback " + (correct ? "fb-good" : "fb-bad");
+    fb.innerHTML = "<b>" + (correct ? "✓ Goed!" : "✗ Niet juist.") + "</b> " + esc(q.uitleg || "");
+
+    const nextBtn = $("#mcNext");
+    nextBtn.disabled = false;
+    nextBtn.textContent = (mcIdx === mcDeck.length - 1) ? "Bekijk resultaat →" : "Volgende →";
+    updateMcBar();
+  }
+
+  function mcNext() {
+    if (!mcAnswered) return;
+    if (mcIdx < mcDeck.length - 1) { mcIdx++; showMcQuestion(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    else finishMc();
+  }
+
+  function updateMcBar() {
+    $("#mcProgress").textContent = mcDeck.length ? ("Vraag " + (mcIdx + 1) + " / " + mcDeck.length) : "Geen vragen";
+    $("#mcScore").textContent = "Goed: " + mcScore + " / " + mcDone;
+  }
+
+  function finishMc() {
+    $("#mcStage").style.display = "none";
+    document.querySelector(".mc-controls").style.display = "none";
+    document.querySelector("#view-meerkeuze .mc-bar").style.display = "none";
+    const total = mcDeck.length;
+    const pct = total ? Math.round(mcScore / total * 100) : 0;
+    const msg = pct >= 80 ? "Sterk! Je kent je feiten goed." :
+                pct >= 60 ? "Goed op weg — herhaal de foute vragen even." :
+                "Nog wat te oefenen. Loop het spiekbriefje en je bijlagen na.";
+    const res = $("#mcResult");
+    res.classList.remove("is-hidden");
+    res.innerHTML =
+      '<h2>Quiz afgerond 🎯</h2>' +
+      '<div class="result-stat">' +
+        '<div class="stat-box"><div class="num" style="color:var(--primary-d)">' + pct + '%</div><div class="lbl">Score</div></div>' +
+        '<div class="stat-box"><div class="num" style="color:var(--good)">' + mcScore + '</div><div class="lbl">Goed</div></div>' +
+        '<div class="stat-box"><div class="num" style="color:var(--bad)">' + (total - mcScore) + '</div><div class="lbl">Fout</div></div>' +
+      '</div>' +
+      '<p class="muted">' + esc(msg) + '</p>' +
+      '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
+        (mcWrong.length ? '<button class="btn btn-primary" id="mcReviewWrong">Oefen de ' + mcWrong.length + ' foute opnieuw</button>' : '') +
+        '<button class="btn btn-ghost" id="mcRetry">Opnieuw beginnen</button>' +
+      '</div>';
+    if (mcWrong.length) $("#mcReviewWrong").addEventListener("click", () => {
+      const ids = mcWrong.slice();
+      mcDeck = DATA.mcVragen.filter(q => ids.indexOf(q.id) >= 0);
+      mcIdx = 0; mcScore = 0; mcDone = 0; mcWrong = [];
+      $("#mcResult").classList.add("is-hidden");
+      $("#mcStage").style.display = "";
+      document.querySelector(".mc-controls").style.display = "";
+      document.querySelector("#view-meerkeuze .mc-bar").style.display = "";
+      showMcQuestion();
+    });
+    $("#mcRetry").addEventListener("click", renderMeerkeuze);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   /* ===================================================================
@@ -1126,6 +1271,13 @@
     $("#flashKnown").addEventListener("click", () => flashMark(true));
     $("#flashAgain").addEventListener("click", () => flashMark(false));
     document.addEventListener("keydown", flashKeydown);
+
+    // meerkeuze
+    buildLolSelect($("#mcLol"), true, true);
+    $("#mcLol").addEventListener("change", renderMeerkeuze);
+    $("#mcShuffle").addEventListener("click", () => { mcDeck = shuffle(mcDeck); mcIdx = 0; mcScore = 0; mcDone = 0; mcWrong = []; showMcQuestion(); });
+    $("#mcRestart").addEventListener("click", renderMeerkeuze);
+    $("#mcNext").addEventListener("click", mcNext);
 
     $("#btnPdf").addEventListener("click", downloadPdf);
     $("#btnStartSim").addEventListener("click", startSim);
