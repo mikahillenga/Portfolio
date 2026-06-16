@@ -907,6 +907,34 @@
     if (btn) btn.textContent = podPlaying ? "⏸ Pauze" : "▶ Afspelen";
   }
 
+  /* Bouwt het podcast-script als platte tekst (voor het lokale TTS-bruggetje). */
+  function buildPodcastScriptText() {
+    const pod = DATA.podcast;
+    const out = ["# " + pod.titel, "# " + pod.intro, ""];
+    pod.hoofdstukken.forEach(h => {
+      out.push("# " + h.titel);
+      h.regels.forEach(r => out.push(r.s + ": " + r.t));
+      out.push("");
+    });
+    return out.join("\n");
+  }
+
+  function downloadText(filename, text) {
+    let url;
+    try { url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" })); }
+    catch (e) { url = "data:text/plain;charset=utf-8," + encodeURIComponent(text); }
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    if (String(url).indexOf("blob:") === 0) setTimeout(() => { try { URL.revokeObjectURL(url); } catch (e) {} }, 1000);
+  }
+
+  function downloadPodcastScript() {
+    downloadText("podcast-script.txt", buildPodcastScriptText());
+    const st = $("#podStatus");
+    if (st) st.textContent = "Script gedownload. Maak er een MP3 van met het bruggetje (zie uitleg).";
+  }
+
   /* ===================================================================
      CGI-SIMULATIE
   =================================================================== */
@@ -1544,6 +1572,7 @@
       podRate = parseFloat($("#podRate").value) || 1;
       if (podPlaying) { stopSpeaking(); podSpeakCurrent(); }
     });
+    $("#podDownload").addEventListener("click", downloadPodcastScript);
 
     $("#btnPdf").addEventListener("click", downloadPdf);
     $("#btnStartSim").addEventListener("click", startSim);

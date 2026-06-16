@@ -512,6 +512,15 @@ select:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
 .pod-rate { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: .82rem; }
 .pod-rate select { min-width: 90px; padding: 7px 30px 7px 10px; }
 .pod-status { margin-top: 10px; color: #e0e7ff; font-size: .82rem; min-height: 1em; }
+.pod-download { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,.2); }
+.pod-download .btn-small { background: rgba(255,255,255,.14); color: #fff; border: 1px solid rgba(255,255,255,.4); }
+.pod-download .btn-small:hover { background: rgba(255,255,255,.26); }
+.pod-mp3-help { margin-top: 10px; }
+.pod-mp3-help summary { cursor: pointer; font-size: .85rem; color: #e0e7ff; font-weight: 600; }
+.pod-mp3-body { margin-top: 8px; font-size: .85rem; color: #e0e7ff; }
+.pod-mp3-body pre { background: rgba(0,0,0,.28); color: #f1f5f9; padding: 10px 14px; border-radius: var(--radius-sm); overflow-x: auto; font-size: .8rem; }
+.pod-mp3-body code { background: rgba(0,0,0,.28); padding: 1px 5px; border-radius: 4px; }
+.pod-mp3-body .muted { color: #c7d2fe; }
 
 .pod-body { display: grid; grid-template-columns: 260px 1fr; gap: 18px; align-items: start; }
 .pod-chapters {

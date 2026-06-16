@@ -307,6 +307,18 @@
           </div>
         </div>
         <div class="pod-status muted" id="podStatus"></div>
+        <div class="pod-download">
+          <button class="btn btn-small" id="podDownload">⬇ Download script (.txt)</button>
+          <details class="pod-mp3-help">
+            <summary>🎧 Hoe maak ik er een MP3 van?</summary>
+            <div class="pod-mp3-body">
+              <p>De browser kan zelf geen audiobestand opslaan. Met het meegeleverde bruggetje maak je van het script één MP3 met echte Nederlandse stemmen:</p>
+              <pre>pip install edge-tts
+python tools/podcast_tts.py podcast-script.txt -o podcast.mp3</pre>
+              <p class="muted">Download eerst het script met de knop hierboven. <code>edge-tts</code> geeft de mooiste stemmen (twee verschillende, één per host) en heeft internet nodig. Geen internet? Gebruik <code>--engine pyttsx3</code> voor een volledig offline (robotachtigere) variant.</p>
+            </div>
+          </details>
+        </div>
       </div>
 
       <div class="pod-body">

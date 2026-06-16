@@ -24,7 +24,7 @@ Werkt offline. Je antwoorden en zelfbeoordelingen worden alleen lokaal in je bro
 | **CGI-simulatie** | Een reeks willekeurige vragen met een **lopende timer**, net als in een echt gesprek. Kies aantal vragen, zwaarte en eventueel één leeruitkomst. Zet **spreekmodus** aan om elke vraag automatisch te laten voorlezen. |
 | **CGI-beoordeling** | **Twee losse beoordelingen**: (1) het CGI-oordeel op basis van de kernpunten die je bij de open vragen aanvinkte (per leeruitkomst, met sterke/zwakke punten en een vervolgvraag) en een eindoordeel langs de vier dimensies, en (2) een aparte **kennisquiz-beoordeling** op basis van je meerkeuze-score per leeruitkomst. Beide ook in de PDF. |
 | **Spiekbriefje** | Kerncijfers en feiten uit je stage (organisatie, onderzoek, methoden, POP) om je geheugen te checken. |
-| **Podcast** | Een gesproken samenvatting (~25-30 min) als **gesprek tussen twee hosts**, die in 17 hoofdstukken je hele stof doornemen. Wordt voorgelezen door de stem(men) van je browser; met hoofdstuknavigatie, snelheidsregeling en een meeleesbaar transcript. Werkt het best in Chrome/Edge. |
+| **Podcast** | Een gesproken samenvatting (~25-30 min) als **gesprek tussen twee hosts**, die in 17 hoofdstukken je hele stof doornemen. Wordt voorgelezen door de stem(men) van je browser; met hoofdstuknavigatie, snelheidsregeling en een meeleesbaar transcript. Je kunt het script ook downloaden en er een **MP3** van maken (zie hieronder). Werkt het best in Chrome/Edge. |
 | **Voortgang** | Per leeruitkomst zie je je **zelfbeoordeling** van de open vragen én je **meerkeuze-quizscore** (goed/fout/nog niet gedaan). |
 
 ## Hoe werkt het oordeel?
@@ -75,6 +75,26 @@ Zet in de app het server-type op **OpenAI-compatible** en de URL op
 - Heb je al een **`whisper.cpp`**-server (`/inference`) of **`whisper-asr-webservice`** (`/asr`) draaien? Kies dan
   dat server-type en vul de bijbehorende URL in. De app ondersteunt alle drie.
 
+## Podcast als MP3
+
+In het **Podcast**-tabblad kun je de samenvatting direct in de browser laten voorlezen. Wil je er een
+echt **MP3-bestand** van (bijv. om in je telefoon te zetten), dan maakt het meegeleverde bruggetje dat:
+
+1. Klik in de speler op **⬇ Download script (.txt)** — je krijgt `podcast-script.txt`.
+2. Maak er een MP3 van:
+
+```bash
+pip install edge-tts
+python tools/podcast_tts.py podcast-script.txt -o podcast.mp3
+```
+
+- **`edge-tts`** (aanbevolen) gebruikt mooie Nederlandse neurale stemmen — twee verschillende, één per
+  host — en levert direct een MP3. Het heeft internet nodig.
+- Geen internet? Gebruik `--engine pyttsx3` voor een volledig **offline** (robotachtigere) variant; die
+  schrijft een WAV-bestand.
+- `python tools/podcast_tts.py --list-voices` toont de beschikbare Nederlandse stemmen, die je met
+  `--voice-n` en `--voice-m` kunt kiezen.
+
 ## PDF-rapport
 
 Op **CGI-beoordeling** staat **🖨️ Download als PDF**. Die opent de printdialoog van je browser; kies daar
@@ -101,4 +121,5 @@ styles.css              vormgeving
 data.js                 vragenbank, modelpunten, spiekbriefje en rubric (pas dit aan)
 app.js                  logica (oefenen, simulatie, beoordeling, spraak, PDF)
 tools/whisper_server.py  optioneel lokaal Whisper-bruggetje (spraak → tekst)
+tools/podcast_tts.py     optioneel: maak een MP3 van het podcast-script (tekst → spraak)
 ```
