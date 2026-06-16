@@ -1000,45 +1000,102 @@
     intro.innerHTML =
       '<div class="assessor-avatar" aria-hidden="true">👩‍⚖️</div>' +
       '<div><h3>Je CGI-beoordelaar</h3>' +
-      '<p>Ik beoordeel je op basis van de kernpunten die je per vraag hebt <b>aangevinkt als “genoemd”</b>. ' +
-      'Wees daarin eerlijk — dan is dit oordeel een eerlijke spiegel. Dit is een oefenindicatie, geen officieel cijfer.</p></div>';
+      '<p>Hieronder vind je twee losse beoordelingen: het <b>CGI-oordeel</b> (op basis van de kernpunten die je ' +
+      'per open vraag aanvinkte) en een aparte <b>kennisquiz-beoordeling</b> (op basis van je meerkeuze-antwoorden). ' +
+      'Dit is een oefenindicatie, geen officieel cijfer.</p></div>';
     cont.appendChild(intro);
 
+    // ---------- 1) CGI-oordeel (open vragen) ----------
+    cont.appendChild(el("h3", "beo-section-title", "1 · CGI-oordeel — open vragen"));
     if (!attemptedVerdicts.length) {
       cont.appendChild(el("div", "empty",
-        "Je hebt nog geen vragen geoefend. Ga naar <b>Oefenen</b> of <b>CGI-simulatie</b>, beantwoord vragen en vink per vraag aan welke kernpunten je noemde. Daarna geef ik mijn oordeel."));
-      return;
+        "Nog geen open vragen geoefend. Ga naar <b>Oefenen</b> of <b>CGI-simulatie</b>, beantwoord vragen en vink per vraag aan welke kernpunten je noemde."));
+    } else {
+      const overallKey = computeOverallKey(attemptedVerdicts);
+      const oBand = DATA.rubric.banden[overallKey];
+      const overall = el("div", "verdict-overall");
+      overall.style.setProperty("--vc", oBand.kleur);
+      const dims = DATA.rubric.dimensies.map(d =>
+        '<li><b>' + esc(d.naam) + '</b> — ' + esc(d.toelichting) + '</li>').join("");
+      overall.innerHTML =
+        '<div class="vo-top">' +
+          '<div><div class="vo-label">Voorlopig eindoordeel</div>' +
+          '<div class="vo-band" style="color:' + oBand.kleur + '">' + esc(oBand.label) + '</div></div>' +
+          '<div class="vo-badge" style="background:' + oBand.kleur + '">' + esc(bandShort(overallKey)) + '</div>' +
+        '</div>' +
+        '<p class="vo-advies">' + esc(oBand.advies) + '</p>' +
+        '<div class="vo-dims"><div class="vo-dims-t">Een assessor weegt vier dimensies (bijlage O):</div><ul>' + dims + '</ul></div>' +
+        '<p class="muted vo-note">Gebaseerd op ' + attemptedVerdicts.length + ' van de ' + verdicts.length + ' onderdelen die je hebt geoefend.</p>';
+      cont.appendChild(overall);
+      verdicts.forEach(v => cont.appendChild(verdictCard(v)));
     }
 
-    // overall
-    const overallKey = computeOverallKey(attemptedVerdicts);
-    const oBand = DATA.rubric.banden[overallKey];
-
-    const overall = el("div", "verdict-overall");
-    overall.style.setProperty("--vc", oBand.kleur);
-    let dims = DATA.rubric.dimensies.map(d =>
-      '<li><b>' + esc(d.naam) + '</b> — ' + esc(d.toelichting) + '</li>').join("");
-    overall.innerHTML =
-      '<div class="vo-top">' +
-        '<div><div class="vo-label">Voorlopig eindoordeel</div>' +
-        '<div class="vo-band" style="color:' + oBand.kleur + '">' + esc(oBand.label) + '</div></div>' +
-        '<div class="vo-badge" style="background:' + oBand.kleur + '">' + esc(bandShort(overallKey)) + '</div>' +
-      '</div>' +
-      '<p class="vo-advies">' + esc(oBand.advies) + '</p>' +
-      '<div class="vo-dims"><div class="vo-dims-t">Een assessor weegt vier dimensies (bijlage O):</div><ul>' + dims + '</ul></div>' +
-      '<p class="muted vo-note">Gebaseerd op ' + attemptedVerdicts.length + ' van de ' + verdicts.length + ' onderdelen die je hebt geoefend.</p>';
-    cont.appendChild(overall);
-
-    // per-LOL verdict cards
-    verdicts.forEach(v => cont.appendChild(verdictCard(v)));
+    // ---------- 2) Kennisquiz-beoordeling (los) ----------
+    cont.appendChild(el("h3", "beo-section-title", "2 · Kennisquiz-beoordeling — meerkeuze"));
+    renderQuizBeoordeling(cont);
 
     // CTA
     const cta = el("div", "beoordeling-cta");
     cta.innerHTML = '<button class="btn btn-ghost" id="btnBeoToOefen">Oefen de zwakke punten</button>' +
-                    '<button class="btn btn-ghost" id="btnBeoSim">Doe een CGI-simulatie</button>';
+                    '<button class="btn btn-ghost" id="btnBeoMc">Doe de meerkeuze-quiz</button>';
     cont.appendChild(cta);
     $("#btnBeoToOefen").addEventListener("click", () => openOefen("all"));
-    $("#btnBeoSim").addEventListener("click", () => showView("simulatie"));
+    $("#btnBeoMc").addEventListener("click", () => showView("meerkeuze"));
+  }
+
+  /* Losse beoordeling op basis van de meerkeuze-antwoorden (per leeruitkomst). */
+  function quizVerdict(gid) {
+    const qs = DATA.mcVragen.filter(q => q.lol === gid);
+    let answered = 0, correct = 0;
+    qs.forEach(q => {
+      const e = store[q.id];
+      if (e && typeof e.mc === "boolean") { answered++; if (e.mc) correct++; }
+    });
+    let bandKey;
+    if (answered === 0) bandKey = "none";
+    else { const s = correct / answered; bandKey = s >= 0.8 ? "goed" : s >= 0.6 ? "voldoende" : s >= 0.4 ? "bijna" : "onvoldoende"; }
+    return { gid: gid, total: qs.length, answered: answered, correct: correct, bandKey: bandKey };
+  }
+
+  function renderQuizBeoordeling(cont) {
+    const qvs = allGroupIds().map(quizVerdict);
+    const done = qvs.filter(v => v.answered > 0);
+    const totAns = done.reduce((s, v) => s + v.answered, 0);
+    const totCor = done.reduce((s, v) => s + v.correct, 0);
+
+    if (!totAns) {
+      cont.appendChild(el("div", "empty",
+        "Nog geen meerkeuzevragen beantwoord. Ga naar <b>Meerkeuze</b> om je kennis te toetsen."));
+      return;
+    }
+
+    const pct = Math.round(totCor / totAns * 100);
+    const oKey = pct >= 80 ? "goed" : pct >= 60 ? "voldoende" : pct >= 40 ? "bijna" : "onvoldoende";
+    const oBand = DATA.rubric.banden[oKey];
+
+    const block = el("div", "quiz-beo");
+    let rows = "";
+    qvs.forEach(v => {
+      const band = DATA.rubric.banden[v.bandKey];
+      const p = v.answered ? Math.round(v.correct / v.answered * 100) : 0;
+      const stat = v.answered ? (v.correct + "/" + v.answered + " goed") : "niet gedaan";
+      rows +=
+        '<div class="quiz-row" style="--lolc:' + lolColor(v.gid) + '">' +
+          '<div class="quiz-row-name">' + esc(lolLabel(v.gid)) + '</div>' +
+          '<div class="quiz-row-bar"><span style="width:' + p + '%;background:' + band.kleur + '"></span></div>' +
+          '<div class="quiz-row-stat">' + stat + '</div>' +
+          '<span class="quiz-badge" style="background:' + band.kleur + '">' + esc(bandShort(v.bandKey)) + '</span>' +
+        '</div>';
+    });
+    block.innerHTML =
+      '<div class="quiz-overall" style="border-color:' + oBand.kleur + '">' +
+        '<div><div class="vo-label">Quizscore totaal</div>' +
+          '<div class="vo-band" style="color:' + oBand.kleur + '">' + pct + '% goed — ' + esc(bandShort(oKey)) + '</div></div>' +
+        '<div class="quiz-overall-num" style="background:' + oBand.kleur + '">' + totCor + '/' + totAns + '</div>' +
+      '</div>' +
+      '<div class="quiz-rows">' + rows + '</div>' +
+      '<p class="muted quiz-note">Apart van het CGI-oordeel. Gebaseerd op je laatste antwoord per meerkeuzevraag.</p>';
+    cont.appendChild(block);
   }
 
   function bandShort(key) {
@@ -1124,11 +1181,15 @@
       '</div>';
 
     if (!attempted.length) {
-      html += '<p class="pr-note">Er zijn nog geen vragen geoefend. Oefen vragen en vink je modelpunten aan om een beoordeling te genereren.</p></div>';
+      html += '<h2 class="pr-section">1 · CGI-oordeel — open vragen</h2>' +
+              '<p class="pr-note">Nog geen open vragen geoefend. Vink je modelpunten aan om dit oordeel te genereren.</p>';
+      html += '<h2 class="pr-section">2 · Kennisquiz-beoordeling (los)</h2>' + quizReportHtml();
+      html += '<p class="pr-foot">Oefenindicatie — geen officieel cijfer. Gegenereerd met de CGI-oefenomgeving.</p></div>';
       root.innerHTML = html;
       return;
     }
 
+    html += '<h2 class="pr-section">1 · CGI-oordeel — open vragen</h2>';
     const overallKey = computeOverallKey(attempted);
     const oBand = DATA.rubric.banden[overallKey];
     html +=
@@ -1168,9 +1229,30 @@
       html += '</div>';
     });
 
-    html += '<p class="pr-foot">Oefenindicatie op basis van zelf aangevinkte kernpunten — geen officieel cijfer. ' +
+    html += '<h2 class="pr-section">2 · Kennisquiz-beoordeling (los)</h2>' + quizReportHtml();
+
+    html += '<p class="pr-foot">Oefenindicatie op basis van zelf aangevinkte kernpunten en je quiz-antwoorden — geen officieel cijfer. ' +
             'Gegenereerd met de CGI-oefenomgeving.</p></div>';
     root.innerHTML = html;
+  }
+
+  function quizReportHtml() {
+    const qvs = allGroupIds().map(quizVerdict);
+    const done = qvs.filter(v => v.answered > 0);
+    const totAns = done.reduce((s, v) => s + v.answered, 0);
+    const totCor = done.reduce((s, v) => s + v.correct, 0);
+    if (!totAns) return '<p class="pr-muted">Nog geen meerkeuzevragen beantwoord.</p>';
+    const pct = Math.round(totCor / totAns * 100);
+    let h = '<div class="pr-quiz-overall"><b>Quizscore totaal:</b> ' + pct + '% goed (' + totCor + '/' + totAns + ')</div>';
+    h += '<table class="pr-quiz"><tbody>';
+    qvs.forEach(v => {
+      const band = DATA.rubric.banden[v.bandKey];
+      const stat = v.answered ? (v.correct + '/' + v.answered + ' goed') : 'niet gedaan';
+      h += '<tr><td>' + esc(lolLabel(v.gid)) + '</td><td>' + stat + '</td>' +
+           '<td><span class="pr-band" style="background:' + band.kleur + '">' + esc(bandShort(v.bandKey)) + '</span></td></tr>';
+    });
+    h += '</tbody></table>';
+    return h;
   }
 
   function downloadPdf() {

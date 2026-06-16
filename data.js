@@ -898,6 +898,158 @@ const CGI_DATA = {
       ],
       correct: 0,
       uitleg: "Die keuze past bij je richting: verandermanagement en omgaan met weerstand, plus diepgaander onderzoek en datavaardigheden."
+    },
+
+    /* ---- Uitbreiding ---- */
+    {
+      id: "mc-l1-5", lol: "lol1",
+      vraag: "Wat leverde de Gemba walk (meelopen op de afdeling) je op?",
+      opties: [
+        "Je toetste je aannames aan de praktijk en zag waar de drukte echt vandaan kwam",
+        "Je kon vanaf je bureau alle cijfers verzamelen",
+        "Je hoefde niet meer met verpleegkundigen te praten",
+        "Het leverde de financiële begroting op"
+      ],
+      correct: 0,
+      uitleg: "De kennis over hoe het echt werkt zit bij de mensen op de afdeling; daardoor werd je oorzakenanalyse sterker."
+    },
+    {
+      id: "mc-l1-6", lol: "lol1",
+      vraag: "Wat is het kenmerkende eerste deel van de A3-methode dat paste bij jouw valkuil?",
+      opties: [
+        "Eerst probleem en huidige situatie scherp krijgen, vóór doel en maatregelen",
+        "Direct beginnen met de oplossing implementeren",
+        "Eerst de begroting rond krijgen",
+        "Eerst draagvlak bij de raad van bestuur regelen"
+      ],
+      correct: 0,
+      uitleg: "Juist die volgorde remde je af, zodat je niet te snel naar de oplossing sprong (je POP-rode draad)."
+    },
+    {
+      id: "mc-l2-6", lol: "lol2",
+      vraag: "Hoeveel observaties voerde je in totaal uit?",
+      opties: ["26 observaties", "215 observaties", "9 observaties", "49 observaties"],
+      correct: 0,
+      uitleg: "In die 26 observaties registreerde je samen 215 zorghandelingen."
+    },
+    {
+      id: "mc-l2-7", lol: "lol2",
+      vraag: "Op welke afdelingen voerde je de observaties uit?",
+      opties: ["3A, 3B en 2B", "Alleen op 3B", "Op de OK en de SEH", "Op alle verpleegafdelingen tegelijk"],
+      correct: 0,
+      uitleg: "Door op meerdere afdelingen te observeren werd het beeld iets breder dan alleen 3B."
+    },
+    {
+      id: "mc-l2-8", lol: "lol2",
+      vraag: "Welk model lag onder je duurzaamheidsnulmeting (bijlage I)?",
+      opties: ["Triple Bottom Line: people, planet, profit", "Het 7S-model", "De 8 stappen van Kotter", "De PICK-matrix"],
+      correct: 0,
+      uitleg: "Je bekeek de duurzaamheid vanuit drie rollen (organisatie, werkvloer en patiënt) plus cijfers uit het jaardocument."
+    },
+    {
+      id: "mc-l2-9", lol: "lol2",
+      vraag: "Wat was je belangrijkste bevinding in de duurzaamheidsnulmeting?",
+      opties: [
+        "Het ziekenhuis doet veel aan duurzaamheid, maar de patiënt merkt er weinig van",
+        "Het ziekenhuis doet helemaal niets aan duurzaamheid",
+        "Duurzaamheid kost te veel geld",
+        "De patiënt is juist het meest tevreden over de duurzaamheid"
+      ],
+      correct: 0,
+      uitleg: "Dat verschil zag je pas door de drie perspectieven naast elkaar te leggen."
+    },
+    {
+      id: "mc-l3-5", lol: "lol3",
+      vraag: "Welke methode gebruik je voor de wekelijkse evaluatie van het verbetertraject?",
+      opties: ["De KATA-methode", "De BCG-matrix", "Een SWOT-analyse", "De Big Five-test"],
+      correct: 0,
+      uitleg: "KATA is een vaste routine om stap voor stap te blijven verbeteren (bijlage P)."
+    },
+    {
+      id: "mc-l3-6", lol: "lol3",
+      vraag: "Hoe ging je om met het ontbreken van afdelingscijfers voor 3B?",
+      opties: [
+        "Je verzamelde zelf data via observatie",
+        "Je legde het traject stil",
+        "Je gebruikte cijfers van een ander ziekenhuis",
+        "Je schatte ze in zonder onderbouwing"
+      ],
+      correct: 0,
+      uitleg: "Doorpakken waar info ontbrak: zelf observeren in plaats van het traject te laten stilvallen."
+    },
+    {
+      id: "mc-l4-5", lol: "lol4",
+      vraag: "Welke techniek hielp je bij het schakelen tussen werkvloer en leiding?",
+      opties: [
+        "Aan het eind van een gesprek samenvatten om te checken of je het goed begreep",
+        "Vooral lange e-mails sturen",
+        "Alleen met de leiding praten",
+        "Beslissingen zo snel mogelijk doordrukken"
+      ],
+      correct: 0,
+      uitleg: "Samenvatten voorkwam misverstanden en hielp je je taal aan te passen aan je gesprekspartner."
+    },
+    {
+      id: "mc-l4-6", lol: "lol4",
+      vraag: "Welke organisatievorm typeert het OZG volgens Mintzberg?",
+      opties: ["Een professionele bureaucratie", "Een machinebureaucratie", "Een adhocratie", "Een eenvoudige structuur"],
+      correct: 0,
+      uitleg: "Veel autonome, hoogopgeleide professionals — wat een cultuuromslag (groen gedrag) extra tijd kost."
+    },
+    {
+      id: "mc-l5-4", lol: "lol5",
+      vraag: "Hoe vaak wilde je volgens je POP gericht feedback vragen en zichtbaar verwerken?",
+      opties: ["Minimaal 3 keer", "1 keer", "10 keer", "Nooit, alleen aan het eind"],
+      correct: 0,
+      uitleg: "Onderdeel van leerdoel 4: verantwoordelijkheid en reflectie, met maandelijkse reflectiemomenten met Joukje."
+    },
+    {
+      id: "mc-l5-5", lol: "lol5",
+      vraag: "Wat deed je nadat je feedback op je conceptverdiepende opdracht kreeg?",
+      opties: [
+        "Stappen uitgewerkt, maatregelen concreter, en tussentijds getoetst bij Joanne en Mariska",
+        "De feedback genegeerd",
+        "Helemaal opnieuw begonnen met een ander onderwerp",
+        "Alleen de spelling aangepast"
+      ],
+      correct: 0,
+      uitleg: "Je gooide de kern niet overboord, maar scherpte gericht aan — zichtbaar via concept → definitieve versie."
+    },
+    {
+      id: "mc-alg-6", lol: "alg",
+      vraag: "Welke beroepsrol spreekt je aan voor de langere termijn?",
+      opties: [
+        "Procesadviseur, organisatieadviseur of projectmedewerker",
+        "Chirurg",
+        "Verpleegkundige",
+        "Financieel controller bij een bank"
+      ],
+      correct: 0,
+      uitleg: "Je werkt graag op het snijvlak van analyse en uitvoering, bij voorkeur in een complexe organisatie."
+    },
+    {
+      id: "mc-alg-7", lol: "alg",
+      vraag: "Wat is het financiële beeld van het OZG (bijlage J/N)?",
+      opties: [
+        "Een verlies in 2024 (~€1,9 mln) en een verwacht verlies in 2025 (~€4 mln)",
+        "Een recordwinst in 2024",
+        "Een sluitende begroting zonder zorgen",
+        "Er zijn geen financiële gegevens beschikbaar"
+      ],
+      correct: 0,
+      uitleg: "Daarom voert het ziekenhuis het Herstelplan 2025–2027 uit; financieel herstel is een randvoorwaarde voor de missie."
+    },
+    {
+      id: "mc-alg-8", lol: "alg",
+      vraag: "Wat is een randvoorwaarde voordat de pilot structureel kan worden?",
+      opties: [
+        "Duidelijkheid over het functieprofiel en de medezeggenschapsroute (OR)",
+        "Eerst een nieuwe afdeling bouwen",
+        "Meer artsen aannemen",
+        "Toestemming van de zorgverzekeraar voor elk bed"
+      ],
+      correct: 0,
+      uitleg: "Volgorde: taken → competenties/diploma's → functiebeschrijving → medezeggenschap, belegd via P&O."
     }
   ],
 
