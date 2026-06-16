@@ -76,15 +76,37 @@
   })();
   function saveStt() { try { localStorage.setItem(STT_KEY, JSON.stringify(sttSettings)); } catch (e) {} }
 
+  // Hoe "mooi" is een stem waarschijnlijk? Hoger = beter (neuraal/online stemmen voorop).
+  function voiceScore(v) {
+    let s = 0;
+    const n = ((v.name || "") + " " + (v.voiceURI || "")).toLowerCase();
+    if (/^nl/i.test(v.lang)) s += 1000;
+    if (/nl[-_]nl/i.test(v.lang)) s += 20; else if (/nl[-_]be/i.test(v.lang)) s += 10;
+    if (/natural|neural|online/.test(n)) s += 300;
+    if (/google/.test(n)) s += 140;
+    if (/enhanced|premium|wavenet/.test(n)) s += 120;
+    if (/microsoft/.test(n)) s += 40;
+    if (v.localService === false) s += 30; // online stemmen klinken meestal natuurlijker
+    return s;
+  }
+  function dutchVoicesSorted() {
+    const all = (synth && synth.getVoices()) || [];
+    const nl = all.filter(v => /^nl/i.test(v.lang)).sort((a, b) => voiceScore(b) - voiceScore(a));
+    const rest = all.filter(v => !/^nl/i.test(v.lang)).sort((a, b) => voiceScore(b) - voiceScore(a));
+    return { nl: nl, rest: rest, all: all };
+  }
   function pickDutchVoice() {
     if (!synth) return null;
     if (dutchVoice !== undefined) return dutchVoice;
-    const voices = synth.getVoices() || [];
-    dutchVoice = voices.find(v => /nl(-|_)?NL/i.test(v.lang)) || voices.find(v => /^nl/i.test(v.lang)) || null;
+    const nl = dutchVoicesSorted().nl;
+    dutchVoice = nl[0] || null;
     return dutchVoice;
   }
   if (synth && typeof synth.addEventListener === "function") {
-    synth.addEventListener("voiceschanged", () => { dutchVoice = undefined; pickDutchVoice(); });
+    synth.addEventListener("voiceschanged", () => {
+      dutchVoice = undefined; pickDutchVoice();
+      if (document.getElementById("podVoiceN")) podPopulateVoices();
+    });
   }
 
   function stopSpeaking() { if (synth) try { synth.cancel(); } catch (e) {} }
@@ -775,11 +797,56 @@
   let podRate = 1;
   let podBuilt = false;
 
+  function loadPodVoices() { try { return JSON.parse(localStorage.getItem("cgi-pod-voices")) || {}; } catch (e) { return {}; } }
+  let podVoiceSel = loadPodVoices();
+  function savePodVoices() { try { localStorage.setItem("cgi-pod-voices", JSON.stringify(podVoiceSel)); } catch (e) {} }
+  function voiceKey(v) { return (v && (v.voiceURI || v.name)) || ""; }
+  function resolveVoice(key) {
+    const all = (synth && synth.getVoices()) || [];
+    return all.find(v => voiceKey(v) === key) || null;
+  }
   function podVoiceFor(speaker) {
-    const voices = (synth && synth.getVoices()) || [];
-    const nl = voices.filter(v => /^nl/i.test(v.lang));
-    if (speaker === "N") return nl[0] || pickDutchVoice() || null;
-    return nl[1] || nl[0] || pickDutchVoice() || null; // tweede stem indien beschikbaar
+    const k = speaker === "N" ? podVoiceSel.n : podVoiceSel.m;
+    return resolveVoice(k) || pickDutchVoice() || null;
+  }
+
+  /* Vul de twee stemkeuze-menu's met de beschikbare browserstemmen (mooiste bovenaan). */
+  function podPopulateVoices() {
+    const selN = $("#podVoiceN"), selM = $("#podVoiceM");
+    if (!selN || !selM) return;
+    const sorted = dutchVoicesSorted();
+    const nl = sorted.nl, rest = sorted.rest;
+    if (!podVoiceSel.n && nl[0]) podVoiceSel.n = voiceKey(nl[0]);
+    if (!podVoiceSel.m) podVoiceSel.m = voiceKey(nl[1] || nl[0] || rest[0]);
+
+    function fill(sel, current) {
+      sel.innerHTML = "";
+      const grp = (list, label) => {
+        if (!list.length) return;
+        const og = document.createElement("optgroup");
+        og.label = label;
+        list.forEach(v => {
+          const o = document.createElement("option");
+          o.value = voiceKey(v);
+          o.textContent = v.name + " (" + v.lang + ")";
+          if (o.value === current) o.selected = true;
+          og.appendChild(o);
+        });
+        sel.appendChild(og);
+      };
+      grp(nl, "Nederlands");
+      grp(rest, "Overige talen");
+    }
+    fill(selN, podVoiceSel.n);
+    fill(selM, podVoiceSel.m);
+
+    const hint = $("#podVoiceHint");
+    if (hint) {
+      hint.textContent = nl.length
+        ? (nl.length + " Nederlandse stem(men) beschikbaar. Tip: in Edge klinken de ‘Natural/Online’-stemmen het mooist.")
+        : "Geen Nederlandse stem in deze browser. Probeer Chrome of Edge, of installeer een NL-stem in je systeem.";
+    }
+    savePodVoices();
   }
 
   function renderPodcast() {
@@ -802,6 +869,7 @@
       });
       podBuilt = true;
     }
+    podPopulateVoices();
     renderPodTranscript();
     podHighlight();
     podUpdateUi();
@@ -841,10 +909,13 @@
     podHighlight();
     const u = new SpeechSynthesisUtterance(r.t);
     u.lang = "nl-NL";
-    const v = podVoiceFor(r.s);
+    const vN = podVoiceFor("N"), vM = podVoiceFor("M");
+    const v = r.s === "N" ? vN : vM;
     if (v) u.voice = v;
     u.rate = podRate;
-    u.pitch = r.s === "N" ? 1.06 : 0.94; // licht verschil zodat de twee stemmen herkenbaar zijn
+    // alleen toonhoogte verschuiven als beide hosts dezelfde stem hebben; anders de stem zuiver laten
+    const sameVoice = vN && vM && voiceKey(vN) === voiceKey(vM);
+    u.pitch = sameVoice ? (r.s === "N" ? 1.08 : 0.9) : 1.0;
     u.onend = () => { if (podPlaying) podAdvance(); };
     synth.speak(u);
   }
@@ -1573,6 +1644,14 @@
       if (podPlaying) { stopSpeaking(); podSpeakCurrent(); }
     });
     $("#podDownload").addEventListener("click", downloadPodcastScript);
+    $("#podVoiceN").addEventListener("change", () => {
+      podVoiceSel.n = $("#podVoiceN").value; savePodVoices();
+      if (podPlaying) { stopSpeaking(); podSpeakCurrent(); }
+    });
+    $("#podVoiceM").addEventListener("change", () => {
+      podVoiceSel.m = $("#podVoiceM").value; savePodVoices();
+      if (podPlaying) { stopSpeaking(); podSpeakCurrent(); }
+    });
 
     $("#btnPdf").addEventListener("click", downloadPdf);
     $("#btnStartSim").addEventListener("click", startSim);

@@ -24,7 +24,7 @@ Werkt offline. Je antwoorden en zelfbeoordelingen worden alleen lokaal in je bro
 | **CGI-simulatie** | Een reeks willekeurige vragen met een **lopende timer**, net als in een echt gesprek. Kies aantal vragen, zwaarte en eventueel één leeruitkomst. Zet **spreekmodus** aan om elke vraag automatisch te laten voorlezen. |
 | **CGI-beoordeling** | **Twee losse beoordelingen**: (1) het CGI-oordeel op basis van de kernpunten die je bij de open vragen aanvinkte (per leeruitkomst, met sterke/zwakke punten en een vervolgvraag) en een eindoordeel langs de vier dimensies, en (2) een aparte **kennisquiz-beoordeling** op basis van je meerkeuze-score per leeruitkomst. Beide ook in de PDF. |
 | **Spiekbriefje** | Kerncijfers en feiten uit je stage (organisatie, onderzoek, methoden, POP) om je geheugen te checken. |
-| **Podcast** | Een gesproken samenvatting (~25-30 min) als **gesprek tussen twee hosts**, die in 17 hoofdstukken je hele stof doornemen. Wordt voorgelezen door de stem(men) van je browser; met hoofdstuknavigatie, snelheidsregeling en een meeleesbaar transcript. Je kunt het script ook downloaden en er een **MP3** van maken (zie hieronder). Werkt het best in Chrome/Edge. |
+| **Podcast** | Een gesproken samenvatting (~25-30 min) als **gesprek tussen twee hosts**, die in 17 hoofdstukken je hele stof doornemen. Wordt voorgelezen door de stem(men) van je browser; je kiest **per host een stem** (de mooiste Nederlandse stem wordt automatisch voorgeselecteerd), met hoofdstuknavigatie, snelheidsregeling en een meeleesbaar transcript. Je kunt het script ook downloaden en er een **MP3** van maken (zie hieronder). Werkt het best in Chrome/Edge. |
 | **Voortgang** | Per leeruitkomst zie je je **zelfbeoordeling** van de open vragen én je **meerkeuze-quizscore** (goed/fout/nog niet gedaan). |
 
 ## Hoe werkt het oordeel?
@@ -74,6 +74,19 @@ Zet in de app het server-type op **OpenAI-compatible** en de URL op
   werkt alleen in een beveiligde context, en localhost telt als veilig.
 - Heb je al een **`whisper.cpp`**-server (`/inference`) of **`whisper-asr-webservice`** (`/asr`) draaien? Kies dan
   dat server-type en vul de bijbehorende URL in. De app ondersteunt alle drie.
+
+## Mooiere stemmen in de browser
+
+In het **Podcast**-tabblad kies je per host (Noor en Mees) een stem uit de lijst; de app zet automatisch
+de mooiste beschikbare Nederlandse stem voorop. De kwaliteit hangt af van je browser/systeem:
+
+- **Edge** heeft de mooiste stemmen: kies een **“Natural”/“Online”**-stem (bijv. *Fenna*, *Maarten*, *Colette*).
+- **Chrome** heeft *Google Nederlands* (prima kwaliteit).
+- Op **Windows/macOS** kun je in de systeeminstellingen extra Nederlandse stemmen bijinstalleren; die
+  verschijnen dan vanzelf in de lijst.
+
+Je keuze wordt onthouden in je browser. Wil je echt studiokwaliteit als **bestand**, gebruik dan de
+MP3-export hieronder (Piper/edge-tts).
 
 ## Podcast als MP3
 
