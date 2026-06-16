@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CGI-oefenomgeving — Portfolio Oriënterende Stage</title>
+  <meta name="description" content="Oefenomgeving om je portfolio voor te bereiden op een Criterium Gericht Interview (CGI)." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">CGI</span>
+        <div class="brand-text">
+          <h1>CGI-oefenomgeving</h1>
+          <p>Portfolio Oriënterende Stage · <span id="studentNaam"></span></p>
+        </div>
+      </div>
+      <nav class="top-nav" aria-label="Hoofdnavigatie">
+        <button class="nav-btn is-active" data-view="home">Start</button>
+        <button class="nav-btn" data-view="oefenen">Oefenen</button>
+        <button class="nav-btn" data-view="flashcards">Flashcards</button>
+        <button class="nav-btn" data-view="meerkeuze">Meerkeuze</button>
+        <button class="nav-btn" data-view="simulatie">CGI-simulatie</button>
+        <button class="nav-btn" data-view="beoordeling">CGI-beoordeling</button>
+        <button class="nav-btn" data-view="spiekbriefje">Spiekbriefje</button>
+        <button class="nav-btn" data-view="podcast">Podcast</button>
+        <button class="nav-btn" data-view="voortgang">Voortgang</button>
+        <button class="nav-btn nav-gear" id="btnSttToggle" title="Transcriptie-instellingen (spraak → tekst)">⚙ Whisper</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="app-main" id="appMain">
+
+    <!-- ===================== TRANSCRIPTIE-INSTELLINGEN ===================== -->
+    <div class="stt-panel is-hidden" id="sttPanel">
+      <div class="stt-inner">
+        <div class="stt-top">
+          <h3>⚙ Transcriptie-instellingen <span class="stt-pill" id="sttActivePill">Actief: browser</span></h3>
+          <button class="stt-close" id="sttClose" title="Sluiten">✕</button>
+        </div>
+        <p class="muted">Kies hoe je gesproken antwoord naar tekst wordt omgezet. Heb je <b>Whisper</b> op je laptop draaien, kies dan “Lokale Whisper” voor accuratere transcriptie.</p>
+
+        <div class="stt-engines">
+          <label><input type="radio" name="sttEngine" value="browser" /> <b>Browser</b> (Web Speech API) — werkt direct in Chrome/Edge, geen installatie</label>
+          <label><input type="radio" name="sttEngine" value="whisper" /> <b>Lokale Whisper</b> — gebruikt het Whisper-model op je eigen laptop</label>
+        </div>
+
+        <div id="sttWhisperOpts" class="stt-whisper">
+          <div class="stt-grid">
+            <div class="stt-field">
+              <label for="sttFormat">Server-type</label>
+              <select id="sttFormat">
+                <option value="openai">OpenAI-compatible (/v1/audio/transcriptions)</option>
+                <option value="whispercpp">whisper.cpp server (/inference)</option>
+                <option value="asr">whisper-asr-webservice (/asr)</option>
+              </select>
+            </div>
+            <div class="stt-field stt-wide">
+              <label for="sttUrl">Endpoint-URL</label>
+              <input id="sttUrl" type="text" spellcheck="false" placeholder="http://127.0.0.1:8000/v1/audio/transcriptions" />
+            </div>
+            <div class="stt-field">
+              <label for="sttLang">Taal</label>
+              <input id="sttLang" type="text" value="nl" />
+            </div>
+            <div class="stt-field">
+              <label for="sttModel">Model (optioneel)</label>
+              <input id="sttModel" type="text" value="base" />
+            </div>
+          </div>
+          <div class="stt-actions">
+            <button class="btn btn-small btn-ghost" id="sttTest">Test verbinding</button>
+            <span id="sttTestResult" class="muted"></span>
+          </div>
+          <details class="stt-help">
+            <summary>Hoe zet ik mijn lokale Whisper aan?</summary>
+            <div class="stt-help-body">
+              <p><b>Snelste manier</b> — gebruik het meegeleverde bruggetje (gebruikt jouw eigen Whisper-model, geen extra downloads):</p>
+              <pre>python tools/whisper_server.py --model base --port 8000</pre>
+              <p>Zet hierboven het server-type op <b>OpenAI-compatible</b> en de URL op <code>http://127.0.0.1:8000/v1/audio/transcriptions</code>. Klik daarna op “Test verbinding”.</p>
+              <p class="muted">Tip: open deze pagina via <code>http://localhost</code> (bijv. <code>python -m http.server</code>) — de microfoon werkt alleen in een beveiligde context. Heb je al een <code>whisper.cpp</code>- of <code>whisper-asr-webservice</code>-server? Kies dan dat server-type en vul de juiste URL in.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== HOME ===================== -->
+    <section class="view" id="view-home">
+      <div class="hero">
+        <h2>Bereid je portfolio voor zoals in een echt CGI</h2>
+        <p class="hero-lead">
+          Een Criterium Gericht Interview (CGI) is een gesprek waarin je assessor toetst of je de
+          leeruitkomsten écht beheerst. Hij of zij vraagt door, vraagt om concrete voorbeelden en
+          checkt of het werk van jou is. Met deze omgeving oefen je dat gesprek: per leeruitkomst,
+          met realistische vragen en met modelpunten uit je eigen portfolio.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" data-view="oefenen">Begin met oefenen</button>
+          <button class="btn btn-ghost" data-view="simulatie">Start een CGI-simulatie</button>
+          <button class="btn btn-ghost" data-view="beoordeling">Vraag een CGI-beoordeling</button>
+        </div>
+      </div>
+
+      <div class="card-grid" id="homeLolGrid"><!-- LOL-kaarten via JS --></div>
+
+      <div class="info-block">
+        <h3>Hoe werkt het?</h3>
+        <ol class="steps">
+          <li><strong>Lees de vraag</strong> en beantwoord hardop (of typ je antwoord) volgens STARR.</li>
+          <li><strong>Klap de modelpunten uit</strong> en <strong>vink aan</strong> welke kernpunten je daadwerkelijk noemde.</li>
+          <li><strong>Beoordeel jezelf</strong> (onvoldoende / voldoende / goed). Alles wordt bewaard in je browser.</li>
+          <li><strong>Train onder druk</strong> met de CGI-simulatie: willekeurige vragen met een timer.</li>
+          <li><strong>Vraag je CGI-beoordeling</strong>: de site geeft per leeruitkomst een assessor-oordeel met sterke punten, gemiste punten en een vervolgvraag.</li>
+        </ol>
+      </div>
+
+      <div class="info-block tips-block">
+        <h3>Tips voor je CGI</h3>
+        <ul class="tips" id="cgiTipsList"><!-- via JS --></ul>
+      </div>
+    </section>
+
+    <!-- ===================== OEFENEN ===================== -->
+    <section class="view is-hidden" id="view-oefenen">
+      <div class="toolbar">
+        <div class="toolbar-group">
+          <label for="filterLol">Leeruitkomst</label>
+          <select id="filterLol"></select>
+        </div>
+        <div class="toolbar-group">
+          <label for="filterType">Vraagtype</label>
+          <select id="filterType">
+            <option value="all">Alle types</option>
+            <option value="open">Openingsvragen</option>
+            <option value="doorvraag">Doorvragen</option>
+            <option value="kritisch">Kritische vragen</option>
+          </select>
+        </div>
+        <div class="toolbar-group toolbar-spacer">
+          <button class="btn btn-small" id="btnRandom">🎲 Willekeurige vraag</button>
+        </div>
+      </div>
+
+      <div id="oefenContainer"><!-- vraagkaarten via JS --></div>
+    </section>
+
+    <!-- ===================== FLASHCARDS ===================== -->
+    <section class="view is-hidden" id="view-flashcards">
+      <div class="toolbar">
+        <div class="toolbar-group">
+          <label for="flashLol">Leeruitkomst</label>
+          <select id="flashLol"></select>
+        </div>
+        <div class="toolbar-group">
+          <label for="flashType">Vraagtype</label>
+          <select id="flashType">
+            <option value="all">Alle types</option>
+            <option value="open">Openingsvragen</option>
+            <option value="doorvraag">Doorvragen</option>
+            <option value="kritisch">Kritische vragen</option>
+          </select>
+        </div>
+        <div class="toolbar-group">
+          <label>Filter</label>
+          <label class="check-inline"><input type="checkbox" id="flashHideKnown" /> Verberg gekende</label>
+        </div>
+        <div class="toolbar-group toolbar-spacer">
+          <button class="btn btn-small" id="flashShuffle">🔀 Schud</button>
+        </div>
+      </div>
+
+      <p class="muted flash-intro">Lees de vraag, beantwoord 'm eerst hardop, en klik op de kaart om het sterke antwoord te zien. Markeer daarna of je 'm kende.</p>
+
+      <div id="flashStage"><!-- kaart via JS --></div>
+
+      <div class="flash-controls">
+        <button class="btn btn-ghost" id="flashPrev">← Vorige</button>
+        <button class="btn btn-primary" id="flashFlip">Toon antwoord</button>
+        <button class="btn btn-ghost" id="flashNext">Volgende →</button>
+      </div>
+      <div class="flash-mark">
+        <button class="btn btn-small flash-again" id="flashAgain">↻ Nog oefenen</button>
+        <button class="btn btn-small flash-known" id="flashKnown">✓ Ken ik</button>
+      </div>
+      <div class="flash-progress muted" id="flashProgress"></div>
+    </section>
+
+    <!-- ===================== MEERKEUZE ===================== -->
+    <section class="view is-hidden" id="view-meerkeuze">
+      <div class="toolbar">
+        <div class="toolbar-group">
+          <label for="mcLol">Leeruitkomst</label>
+          <select id="mcLol"></select>
+        </div>
+        <div class="toolbar-group toolbar-spacer">
+          <button class="btn btn-small" id="mcShuffle">🔀 Schud</button>
+          <button class="btn btn-small btn-ghost" id="mcRestart">↺ Opnieuw</button>
+        </div>
+      </div>
+
+      <p class="muted mc-intro">Kies het juiste antwoord. Je krijgt meteen te zien of het goed is, met een korte toelichting.</p>
+
+      <div class="mc-bar">
+        <span id="mcProgress">Vraag 1 / 1</span>
+        <span id="mcScore" class="mc-score">Goed: 0 / 0</span>
+      </div>
+
+      <div id="mcStage"><!-- vraag via JS --></div>
+
+      <div class="mc-controls">
+        <button class="btn btn-primary" id="mcNext" disabled>Volgende →</button>
+      </div>
+
+      <div id="mcResult" class="mc-result is-hidden"><!-- eindscore via JS --></div>
+    </section>
+
+    <!-- ===================== SIMULATIE ===================== -->
+    <section class="view is-hidden" id="view-simulatie">
+      <div id="simSetup" class="sim-setup">
+        <h2>CGI-simulatie</h2>
+        <p class="muted">
+          Je krijgt een reeks willekeurige vragen verspreid over de leeruitkomsten, met een lopende timer —
+          net als in een echt gesprek. Beantwoord eerst zelf, klap dan de modelpunten uit en beoordeel jezelf.
+        </p>
+        <div class="sim-options">
+          <div class="toolbar-group">
+            <label for="simAantal">Aantal vragen</label>
+            <select id="simAantal">
+              <option value="5">5 vragen (kort)</option>
+              <option value="8" selected>8 vragen (gemiddeld)</option>
+              <option value="12">12 vragen (volledig)</option>
+            </select>
+          </div>
+          <div class="toolbar-group">
+            <label for="simScope">Selectie</label>
+            <select id="simScope">
+              <option value="mix">Mix van alle types</option>
+              <option value="open">Vooral openingsvragen</option>
+              <option value="kritisch">Vooral kritische/doorvragen (zwaar)</option>
+            </select>
+          </div>
+          <div class="toolbar-group">
+            <label for="simLol">Beperk tot</label>
+            <select id="simLol"></select>
+          </div>
+        </div>
+        <label class="check-line"><input type="checkbox" id="simSpeak" /> 🔊 Spreekmodus: lees elke vraag hardop voor</label>
+        <button class="btn btn-primary" id="btnStartSim">Start simulatie</button>
+      </div>
+
+      <div id="simRun" class="sim-run is-hidden">
+        <div class="sim-bar">
+          <div class="sim-progress">Vraag <span id="simIndex">1</span> / <span id="simTotal">8</span></div>
+          <div class="sim-timer" id="simTimer">00:00</div>
+          <button class="btn btn-small btn-ghost" id="btnStopSim">Stoppen</button>
+        </div>
+        <div class="sim-progress-track"><div class="sim-progress-fill" id="simFill"></div></div>
+        <div id="simQuestionSlot"><!-- huidige vraag via JS --></div>
+        <div class="sim-nav">
+          <button class="btn btn-ghost" id="btnSimPrev">← Vorige</button>
+          <button class="btn btn-primary" id="btnSimNext">Volgende →</button>
+        </div>
+      </div>
+
+      <div id="simResult" class="sim-result is-hidden"><!-- samenvatting via JS --></div>
+    </section>
+
+    <!-- ===================== CGI-BEOORDELING ===================== -->
+    <section class="view is-hidden" id="view-beoordeling">
+      <div class="beo-header">
+        <h2>Je CGI-beoordeling</h2>
+        <button class="btn btn-small btn-ghost" id="btnPdf">🖨️ Download als PDF</button>
+      </div>
+      <p class="muted">
+        Een assessor-oordeel per leeruitkomst, gebaseerd op de kernpunten die je per vraag aanvinkte als “genoemd”.
+        Oefen eerst vragen (in <b>Oefenen</b> of de <b>CGI-simulatie</b>) en vink je modelpunten aan; ververs daarna deze pagina.
+      </p>
+      <div id="beoordelingContainer"><!-- via JS --></div>
+    </section>
+
+    <!-- ===================== PODCAST ===================== -->
+    <section class="view is-hidden" id="view-podcast">
+      <h2 id="podTitel">De CGI-podcast</h2>
+      <p class="muted" id="podIntro"></p>
+
+      <div class="pod-player">
+        <div class="pod-now">
+          <div class="pod-now-label">Nu bezig</div>
+          <div class="pod-now-title" id="podNowTitle">—</div>
+        </div>
+        <div class="pod-controls">
+          <button class="btn btn-ghost btn-small" id="podPrev" title="Vorig hoofdstuk">⏮ Vorige</button>
+          <button class="btn btn-primary" id="podPlay">▶ Afspelen</button>
+          <button class="btn btn-ghost btn-small" id="podNext" title="Volgend hoofdstuk">Volgende ⏭</button>
+          <div class="pod-rate">
+            <label for="podRate">Snelheid</label>
+            <select id="podRate">
+              <option value="0.85">0,85×</option>
+              <option value="1" selected>1×</option>
+              <option value="1.15">1,15×</option>
+              <option value="1.3">1,3×</option>
+            </select>
+          </div>
+        </div>
+        <div class="pod-voices">
+          <div class="pod-voice-field">
+            <label for="podVoiceN">🎙️ Stem host (Noor)</label>
+            <div class="pod-voice-row">
+              <select id="podVoiceN"></select>
+              <button class="btn btn-small pod-voice-test" id="podTestN" title="Beluister deze stem">▶ Test</button>
+            </div>
+          </div>
+          <div class="pod-voice-field">
+            <label for="podVoiceM">🎙️ Stem coach (Mees)</label>
+            <div class="pod-voice-row">
+              <select id="podVoiceM"></select>
+              <button class="btn btn-small pod-voice-test" id="podTestM" title="Beluister deze stem">▶ Test</button>
+            </div>
+          </div>
+          <span class="pod-voice-hint" id="podVoiceHint"></span>
+        </div>
+        <div class="pod-status muted" id="podStatus"></div>
+        <div class="pod-download">
+          <button class="btn btn-small" id="podDownload">⬇ Download script (.txt)</button>
+          <details class="pod-mp3-help">
+            <summary>🎧 Hoe maak ik er een MP3 van?</summary>
+            <div class="pod-mp3-body">
+              <p>De browser kan zelf geen audiobestand opslaan. Met het meegeleverde bruggetje maak je van het script één MP3, met automatische pauzes tussen de hoofdstukken.</p>
+              <p><b>Aanrader — mooie stem, volledig offline (Piper):</b></p>
+              <pre>pip install piper-tts lameenc
+python tools/podcast_tts.py --download-voice
+python tools/podcast_tts.py podcast-script.txt --engine piper -o podcast.mp3</pre>
+              <p><b>Minst robotachtig — neurale stemmen (edge-tts):</b></p>
+              <pre>pip install edge-tts
+python tools/podcast_tts.py podcast-script.txt -o podcast.mp3</pre>
+              <p class="muted">Standaardduo: <code>nl-NL-ColetteNeural</code> (Noor) + <code>nl-NL-MaartenNeural</code> (Mees). Vlaams alternatief met <code>--voice-n nl-BE-DenaNeural --voice-m nl-BE-ArnaudNeural</code>. Download eerst het script. Pauzes: <code>--chapter-gap</code> / <code>--line-gap</code>. In de browser (Edge) kies je dezelfde stemmen via de menu's hierboven: zoek de <b>“Natural/Online”</b>-stemmen (Colette, Maarten).</p>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="pod-body">
+        <aside class="pod-chapters" id="podChapters"><!-- hoofdstukken via JS --></aside>
+        <div class="pod-transcript" id="podTranscript"><!-- transcript via JS --></div>
+      </div>
+    </section>
+
+    <!-- ===================== SPIEKBRIEFJE ===================== -->
+    <section class="view is-hidden" id="view-spiekbriefje">
+      <h2>Spiekbriefje — kerncijfers en feiten</h2>
+      <p class="muted">Test of je dit uit je hoofd kent. In een CGI maakt vlot je cijfers en methoden noemen een sterke indruk.</p>
+      <div class="fact-grid" id="factGrid"><!-- via JS --></div>
+    </section>
+
+    <!-- ===================== VOORTGANG ===================== -->
+    <section class="view is-hidden" id="view-voortgang">
+      <h2>Je voortgang</h2>
+      <p class="muted">Per leeruitkomst zie je hoeveel vragen je hebt geoefend en hoe je jezelf beoordeelde. Opgeslagen in deze browser.</p>
+      <div id="voortgangContainer"><!-- via JS --></div>
+      <div class="danger-zone">
+        <button class="btn btn-small btn-danger" id="btnReset">Voortgang wissen</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>Oefenomgeving op basis van het ingeleverde portfolio. Je antwoorden en beoordelingen blijven lokaal in je browser (niets wordt verstuurd).</p>
+  </footer>
+
+  <!-- Printbaar beoordelingsrapport (alleen zichtbaar bij printen/PDF) -->
+  <div id="printRoot" aria-hidden="true"></div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
