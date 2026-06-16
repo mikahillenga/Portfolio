@@ -24,6 +24,7 @@ Werkt offline. Je antwoorden en zelfbeoordelingen worden alleen lokaal in je bro
 | **CGI-simulatie** | Een reeks willekeurige vragen met een **lopende timer**, net als in een echt gesprek. Kies aantal vragen, zwaarte en eventueel één leeruitkomst. Zet **spreekmodus** aan om elke vraag automatisch te laten voorlezen. |
 | **CGI-beoordeling** | **Twee losse beoordelingen**: (1) het CGI-oordeel op basis van de kernpunten die je bij de open vragen aanvinkte (per leeruitkomst, met sterke/zwakke punten en een vervolgvraag) en een eindoordeel langs de vier dimensies, en (2) een aparte **kennisquiz-beoordeling** op basis van je meerkeuze-score per leeruitkomst. Beide ook in de PDF. |
 | **Spiekbriefje** | Kerncijfers en feiten uit je stage (organisatie, onderzoek, methoden, POP) om je geheugen te checken. |
+| **Podcast** | Een gesproken samenvatting (~25-30 min) als **gesprek tussen twee hosts**, die in 17 hoofdstukken je hele stof doornemen. Wordt voorgelezen door de stem(men) van je browser; met hoofdstuknavigatie, snelheidsregeling en een meeleesbaar transcript. Werkt het best in Chrome/Edge. |
 | **Voortgang** | Per leeruitkomst zie je je **zelfbeoordeling** van de open vragen én je **meerkeuze-quizscore** (goed/fout/nog niet gedaan). |
 
 ## Hoe werkt het oordeel?

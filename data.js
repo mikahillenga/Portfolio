@@ -1137,6 +1137,257 @@ const CGI_DATA = {
   ],
 
   /* ------------------------------------------------------------------
+     Podcast — audio-samenvatting (~30 min) als gesprek tussen twee hosts.
+     Wordt in de app voorgelezen door de stem(men) van je browser.
+     Sprekers: "N" = Noor (host), "M" = Mees (coach).
+  ------------------------------------------------------------------ */
+  podcast: {
+    titel: "De CGI-podcast — alles wat je moet weten",
+    sprekers: { N: "Noor", M: "Mees" },
+    intro: "Een gesproken samenvatting van je oriënterende stage, opgebouwd als een gesprek. Luister het in één keer of per hoofdstuk.",
+    hoofdstukken: [
+      {
+        titel: "1 · Welkom en hoe het CGI werkt",
+        regels: [
+          { s: "N", t: "Welkom bij de CGI-podcast. In ongeveer een halfuur lopen we alles door wat je moet weten voor je portfolioverdediging bij het Ommelander Ziekenhuis Groningen." },
+          { s: "M", t: "En het idee is simpel: je luistert, bijvoorbeeld onderweg, en aan het eind heb je je hele verhaal weer scherp. We koppelen alles aan de vijf leeruitkomsten." },
+          { s: "N", t: "Mees, leg eerst even uit wat een CGI eigenlijk is." },
+          { s: "M", t: "CGI staat voor Criterium Gericht Interview. Het is een gesprek waarin je assessor toetst of je de leeruitkomsten echt beheerst. Hij of zij vraagt door, vraagt om concrete voorbeelden, en checkt of het werk van jou is." },
+          { s: "N", t: "Dus niet alleen vertellen wat je deed, maar ook laten zien dat je het snapt." },
+          { s: "M", t: "Precies. En de gouden structuur daarvoor is STARR: Situatie, Taak, Actie, Resultaat en Reflectie. De assessor wil vooral je Actie horen, dus wat deed jij zelf, en je Reflectie, dus wat heb je geleerd." },
+          { s: "N", t: "Belangrijk detail: dit is niveau twee, de oriënterende stage." },
+          { s: "M", t: "Klopt. Niveau twee betekent: je werkt zelfstandig mee aan een echt vraagstuk in een complexe organisatie, onder begeleiding. Je hoeft niet alles perfect te hebben, maar je laat zien dat je methodisch werkt en eerlijk reflecteert." },
+          { s: "N", t: "Onthoud die twee woorden: methodisch en eerlijk. Die komen steeds terug." }
+        ]
+      },
+      {
+        titel: "2 · De organisatie: het OZG",
+        regels: [
+          { s: "N", t: "Eerst de context. Waar liep je stage?" },
+          { s: "M", t: "Bij Bureau Procesverbetering en Projecten van het Ommelander Ziekenhuis Groningen, vanaf februari 2026. Het OZG is het enige algemene vierentwintig-uursziekenhuis voor Noord- en Oost-Groningen. De missie is: samen, de beste zorg, dichtbij." },
+          { s: "N", t: "En financieel staat het ziekenhuis onder druk." },
+          { s: "M", t: "Zeker. Het OZG is juridisch zelfstandig, maar volledig eigendom van het UMCG. Het voert sinds eind 2024 een herstelplan uit, het Herstelplan 2025 tot 2027. In 2024 was er een verlies van ongeveer 1,9 miljoen euro, en voor 2025 werd een verlies van rond de 4 miljoen verwacht." },
+          { s: "N", t: "Dus financieel herstel is een randvoorwaarde voor de hele strategie." },
+          { s: "M", t: "Goed gezegd. Het ziekenhuis heeft ongeveer 1500 medewerkers, waaronder ruim 120 medisch specialisten, en werkt met een platte structuur en korte lijnen. Drie zorgclusters: Acuut, Snijdend en Beschouwend." },
+          { s: "N", t: "En er was een mooi model om die organisatie te typeren." },
+          { s: "M", t: "Ja, volgens Mintzberg is het een professionele bureaucratie: veel hoogopgeleide, autonome zorgprofessionals. Dat is belangrijk, want een verandering opleggen werkt daar niet; je moet mensen meenemen." },
+          { s: "N", t: "De omgeving maakt het extra pittig: de regio vergrijst, de zorgvraag stijgt, en personeel is schaars. Dat tekort is precies waar jouw opdracht omheen draait." }
+        ]
+      },
+      {
+        titel: "3 · De opdracht: verkeerde-bed patiënten op 3B",
+        regels: [
+          { s: "N", t: "Dan de kern van je stage: het verbetertraject op afdeling 3B." },
+          { s: "M", t: "Op 3B liggen regelmatig zogenoemde verkeerde-bed patiënten. Dat zijn mensen die medisch zijn uitbehandeld, maar nog wachten op een plek in een verpleeghuis of revalidatiecentrum." },
+          { s: "N", t: "En het OZG heeft daar dagelijks heel wat van." },
+          { s: "M", t: "Zes tot twaalf per dag, verspreid over meerdere afdelingen. Op 3B lagen ze tussen de reguliere patiënten in, zonder vaste zone en zonder aparte taakverdeling. Daardoor leverden schaarse verpleegkundigen verspreid over de afdeling zorg aan een groep met een veel lichtere zorgvraag." },
+          { s: "N", t: "Wat was nou precies jouw opdracht?" },
+          { s: "M", t: "Onderzoeken hoe je de zorg rond die groep beter kunt organiseren. De centrale vraag: kun je deze patiënten clusteren op 3B, en kan een verzorgende daarbij een deel van de zorg overnemen van de verpleegkundige?" },
+          { s: "N", t: "Met een duidelijke opdrachtgever." },
+          { s: "M", t: "Ja, Mariska Bouwman, het hoofd van 3B. Je werkte samen met je collega Joanne Oelen van het bureau. En je legde alles vast in de verdiepende opdracht procesmanagement, bijlage A." }
+        ]
+      },
+      {
+        titel: "4 · De aanpak: A3-methode en Gemba walk",
+        regels: [
+          { s: "N", t: "Je koos bewust voor de A3-methode. Waarom?" },
+          { s: "M", t: "Omdat het vraagstuk breed was: het raakte taakverdeling, de indeling van de afdeling, personele inzet, bevoegdheden en medezeggenschap tegelijk. De A3-methode dwingt je om eerst het probleem en de huidige situatie scherp te krijgen, vóórdat je een doel en maatregelen bepaalt." },
+          { s: "N", t: "En dat paste precies bij jouw valkuil." },
+          { s: "M", t: "Daar komt je rode draad binnen: je wil te snel naar een oplossing springen. De A3-methode remde je af, en dat had je nodig. Het is bovendien een methode die het bureau aandraagt en die je op je opleiding bij procesmanagement leerde." },
+          { s: "N", t: "Toen ging je de afdeling op, de zogenoemde Gemba walk." },
+          { s: "M", t: "Ja, want de kennis over hoe het echt werkt zit bij de verpleegkundigen, niet in documenten. Door mee te lopen en vragen te stellen toetste je je aannames aan de praktijk, en zag je waar de drukte echt vandaan kwam." },
+          { s: "N", t: "De les daaruit?" },
+          { s: "M", t: "Eerst kijken en luisteren, dan pas oordelen. En blijven afstemmen met Mariska en Joanne, want hun blik haalde je weg bij je eigen aannames." }
+        ]
+      },
+      {
+        titel: "5 · Het onderzoek: de cijfers die je moet kennen",
+        regels: [
+          { s: "N", t: "Nu de cijfers. Deze moet je echt uit je hoofd kennen." },
+          { s: "M", t: "Je voerde tussen februari en maart 2026 zesentwintig observaties uit, op de afdelingen 3A, 3B en 2B, allemaal dagdiensten. Daarin registreerde je 215 zorghandelingen." },
+          { s: "N", t: "En je codeerde die handelingen." },
+          { s: "M", t: "Op zorgtype, risico en bevoegdheid. De uitkomst: de zorg is grotendeels laagcomplex. ADL-zorg was 31 procent, mobiliteit 18 procent. Samen dus 49 procent. En slechts 9 procent was voorbehouden aan een verpleegkundige." },
+          { s: "N", t: "Even vasthouden: 26 observaties, 215 handelingen, 49 procent laagcomplex, 9 procent voorbehouden." },
+          { s: "M", t: "Precies die vier. En heel belangrijk: je gebruikte de OZG-functiebeschrijvingen als meetlat, die van Verpleegkundige I en J en van de ziekenverzorgende. Daardoor werd je oordeel controleerbaar, en geen mening." },
+          { s: "N", t: "Je was ook eerlijk over de grenzen van je onderzoek." },
+          { s: "M", t: "Ja, en dat is sterk. Je observeerde alleen dagdiensten, en de geplande interviews met verpleegkundigen had je nog niet uitgevoerd. Je was ook de enige codeur. Door dat zelf te benoemen, zet je je uitkomsten in het juiste licht." },
+          { s: "N", t: "Als de assessor vraagt hoe zeker die 9 procent is, geef je dus die nuance, plus dat de verpleegkundige als achterwacht blijft en er een escalatieprotocol is." }
+        ]
+      },
+      {
+        titel: "6 · De oorzakenanalyse en het SMART-doel",
+        regels: [
+          { s: "N", t: "Je groef naar de echte oorzaak met de vijf-keer-waarom." },
+          { s: "M", t: "Klopt. En de doorredenering eindigt bij de grondoorzaak: het ontbreken van een formeel functieprofiel voor een verzorgende op een verpleegafdeling binnen het OZG. Zolang dat ontbreekt, kan de afdeling de personele samenstelling niet structureel aanpassen." },
+          { s: "N", t: "Dus clustering alleen is niet genoeg." },
+          { s: "M", t: "Nee, je hebt ook duidelijke afspraken over dat functieprofiel nodig. Dat inzicht maakt je analyse sterk." },
+          { s: "N", t: "En toen kwam het verbeterdoel, mooi SMART geformuleerd." },
+          { s: "M", t: "Het doel beschrijft een gewenste uitkomst, geen oplossing. Concreet: het aandeel verpleegkundige tijd dat naar laagcomplexe zorg gaat, terugbrengen van 49 procent naar maximaal 20 procent per dienst, gemeten over vier weken vanaf de pilotstart." },
+          { s: "N", t: "Met twee subdoelen." },
+          { s: "M", t: "Ja: minimaal 80 procent van de verkeerde-bed patiënten ligt in het cluster, en verpleegkundigen geven de taakverdeling een duidelijkheidscijfer van minimaal een vier op vijf. Let op: het doel was eerst te oplossingsgericht, en dat was juist een feedbackpunt dat je hebt verbeterd." }
+        ]
+      },
+      {
+        titel: "7 · Het voorstel en het implementatieplan",
+        regels: [
+          { s: "N", t: "Hoe ziet je uiteindelijke voorstel eruit?" },
+          { s: "M", t: "Een pilot met vijf geclusterde bedden op 3B, aan Gang 251, een hybride personele inzet, en vaste werkafspraken met escalatiecriteria. De voorkeur gaat uit naar een verzorgende IG, omdat die een ruimer deskundigheidsgebied heeft." },
+          { s: "N", t: "Vertel iets over die escalatiecriteria, want dat laat zien dat je veilig denkt." },
+          { s: "M", t: "De verzorgende roept de dienstdoende verpleegkundige direct op, binnen vijf minuten, bij bijvoorbeeld bewustzijnsverandering, benauwdheid, koorts boven 38,5, een valincident, of plotselinge verwardheid. En aan het eind van elke dienst bespreken ze samen alle patiënten in het cluster." },
+          { s: "N", t: "Het implementatieplan had heldere eigenaren." },
+          { s: "M", t: "Ja. Mariska als opdrachtgever, Joanne vanuit het bureau, Corien Blokzijl van P&O voor het functieprofiel, en de regieverpleegkundige operationeel verantwoordelijk. De pilot duurt zes weken en start medio juni 2026." },
+          { s: "N", t: "En je evalueert op drie niveaus." },
+          { s: "M", t: "Procesindicatoren, ervaringsindicatoren en veiligheidsindicatoren, zoals het aantal escalaties en VIM-meldingen. En de medezeggenschap: de ondernemingsraad kan adviesrecht hebben bij de organisatie van werkzaamheden, en instemmingsrecht bij personele regelingen. Dat exacte onderscheid had je nog niet sluitend, en dat mag je eerlijk zeggen." }
+        ]
+      },
+      {
+        titel: "8 · Leeruitkomst 1: Bedrijfskundig handelen",
+        regels: [
+          { s: "N", t: "Tijd voor de vijf leeruitkomsten. Nummer een: bedrijfskundig handelen." },
+          { s: "M", t: "Hier draait het om een breed vraagstuk methodisch aanpakken. Je sleutelmomenten: de keuze voor de A3-methode, de Gemba walk, en het prioriteren met de PICK-matrix." },
+          { s: "N", t: "Die PICK-matrix, dat was bij een ander proces." },
+          { s: "M", t: "Ja, bij het OK-leeninstrumentarium. Dat proces heeft een doorlooptijd van twee tot drie weken, die vooral uit wachttijd bestaat, met vijf overdrachtsmomenten en geen eigenaar over de hele keten. Met de PICK-matrix scoorde je verbeterpunten op impact en inspanning." },
+          { s: "N", t: "En de uitkomst?" },
+          { s: "M", t: "Dat het vastleggen van de aanvraagtermijn de meeste winst oplevert met de minste inspanning. Zo onderbouwde je je prioritering in plaats van op gevoel te kiezen." },
+          { s: "N", t: "Als de assessor vraagt wat hier nou bedrijfskundig aan is?" },
+          { s: "M", t: "Dan zeg je: ik onderbouw met feiten in plaats van indrukken, ik koppel het afdelingsprobleem aan de bredere context met DESTEP, het 7S-model en SWOT, en ik weeg randvoorwaarden als bevoegdheden en draagvlak mee. Dat is de samenhang tussen proces, mensen en geld." }
+        ]
+      },
+      {
+        titel: "9 · Leeruitkomst 2: Onderzoeken",
+        regels: [
+          { s: "N", t: "Leeruitkomst twee: onderzoeken. De cijfers kennen we al, maar wat is de kern?" },
+          { s: "M", t: "Een betrouwbare onderzoekslijn: een heldere vraag, een verantwoorde methode, data ordenen, en eerlijk zijn over de grenzen. Je koos gestructureerde observatie zodat de data direct uit de praktijk kwam." },
+          { s: "N", t: "Je moest de data ook nog opschonen." },
+          { s: "M", t: "Ja, dezelfde handeling stond soms op vier manieren genoteerd. Je voegde varianten samen tot eenduidige categorieën en herberekende de verdeling, zonder de inhoud te veranderen. Ordenen is iets anders dan data mooier maken." },
+          { s: "N", t: "Er was ook een tweede onderzoek, los van 3B." },
+          { s: "M", t: "De duurzaamheidsnulmeting, op basis van de Triple Bottom Line: people, planet en profit. Je interviewde drie rollen: een coördinator, een medewerker en een patiënt, aangevuld met cijfers uit het jaardocument." },
+          { s: "N", t: "En je belangrijkste bevinding daar?" },
+          { s: "M", t: "Dat het ziekenhuis veel doet aan duurzaamheid, maar dat de patiënt daar weinig van merkt. Dat verschil zag je pas door de perspectieven naast elkaar te leggen. Als de assessor opmerkt dat twee respondenten familie waren, geef je dat eerlijk toe als beperking, en wijs je op de cijfers als objectieve aanvulling." }
+        ]
+      },
+      {
+        titel: "10 · Leeruitkomst 3: Innoverende en ondernemende houding",
+        regels: [
+          { s: "N", t: "Leeruitkomst drie: een innoverende en ondernemende houding." },
+          { s: "M", t: "Hier gaat het om verbeterkansen signaleren en een breed probleem vertalen naar een uitvoerbaar voorstel. Jouw pilot met vijf bedden is daar het voorbeeld van. En het inzicht: een goed idee is nog geen goed voorstel; waarde ontstaat pas binnen de ruimte van bevoegdheden en draagvlak." },
+          { s: "N", t: "Je liet ook doorzettingsvermogen zien." },
+          { s: "M", t: "Toen de afdelingscijfers ontbraken, ging je zelf data verzamelen. Toen er juridische vragen kwamen, startte je de P&O-lijn met Corien Blokzijl en bracht je de medezeggenschap in beeld. Initiatief nemen betekende hier ook: op tijd de juiste mensen aanhaken." },
+          { s: "N", t: "En er was een businesscase met theorie eronder." },
+          { s: "M", t: "De AFAS-haalbaarheidsstudie. Je gebruikte het Value Proposition Canvas om de waarde te bepalen, pijnpunten als handmatige fouten, dubbele invoer en geen totaaloverzicht, en de acht stappen van Kotter om de verandering te analyseren." },
+          { s: "N", t: "Plus nog een conceptplan." },
+          { s: "M", t: "Bij de heropening van de Neurologie dacht je mee over het terugdringen van laagcomplexe huisartsverwijzingen, bijvoorbeeld via filtering met ZorgDomein. Dat bleef concept, en dat mag je gewoon zo benoemen." }
+        ]
+      },
+      {
+        titel: "11 · Leeruitkomst 4: Verbinden",
+        regels: [
+          { s: "N", t: "Leeruitkomst vier: verbinden." },
+          { s: "M", t: "Schakelen tussen niveaus en mensen. Bij de verpleegkundigen stelde je concrete, praktische vragen en vatte je aan het eind samen om te checken of je het goed begreep. Met Mariska en Joanne sprak je op tactisch niveau, over scope, randvoorwaarden en risico's." },
+          { s: "N", t: "En je had een gevoelig onderwerp te managen." },
+          { s: "M", t: "De inzet van een verzorgende in plaats van een verpleegkundige ligt gevoelig. Je bracht het als een mogelijkheid onder onderzoek, niet als een besluit. Daardoor bleven betrokkenen aangehaakt in plaats van overvallen. Hoe je iets brengt, weegt net zo zwaar als de inhoud." },
+          { s: "N", t: "Er was ook een verandermanagement-analyse." },
+          { s: "M", t: "Ja, met het kleurenmodel van De Caluwé en Vermaak. Het herstelplan is blauw ingestoken, top-down en rationeel, terwijl de gewenste verandering vooral groen gedrag vraagt: leren en eigenaarschap. De grootste gap zit in cultuur en gedrag." },
+          { s: "N", t: "En samenwerken om een keten in beeld te brengen." },
+          { s: "M", t: "Bij de supply chain van het OK werkte je samen met Harmina Fischer-Danker en Sonja Tien. Je maakte een interactieve waardestroommapping die de betrokkenen meer inzicht gaf, en die wordt in je evaluatie expliciet als voorbeeld genoemd." }
+        ]
+      },
+      {
+        titel: "12 · Leeruitkomst 5: Persoonlijk leiderschap",
+        regels: [
+          { s: "N", t: "De laatste: persoonlijk leiderschap." },
+          { s: "M", t: "Verantwoordelijkheid nemen, feedback echt verwerken en eerlijk reflecteren. Je kreeg stevige feedback op je concept: de doelstelling was te oplossingsgericht, de stappen te globaal, en de vijf-keer-waarom meer een opsomming dan een doorredenering." },
+          { s: "N", t: "En wat deed je ermee?" },
+          { s: "M", t: "Je werkte de stappen uit, maakte de maatregelen concreter, en toetste tussentijds bij Joanne en Mariska. Het feedbackformulier en de definitieve versie laten samen zien wat je met de feedback hebt gedaan." },
+          { s: "N", t: "Er was ook een eerlijk leermoment op de OK." },
+          { s: "M", t: "Tijdens het meelopen schreef je niet mee, omdat je niet wist of dat mocht tijdens een operatie. Achteraf had je dat gewoon moeten vragen. Daar had je meer persoonlijk leiderschap kunnen tonen." },
+          { s: "N", t: "Belangrijk: durf ook te benoemen wat goed ging." },
+          { s: "M", t: "Zeker. Je nam zelf initiatief, je verzamelde zelf data, je startte de P&O-lijn, en je vroeg actief om feedback. Reflecteren op verbeterpunten is sterk, maar je sterke kanten claimen is óók leiderschap." }
+        ]
+      },
+      {
+        titel: "13 · POP, conclusies en je toekomst",
+        regels: [
+          { s: "N", t: "Bijna klaar. Even je persoonlijk ontwikkelplan en de conclusies." },
+          { s: "M", t: "Je rode draad is: niet te snel naar de oplossing springen; eerst luisteren, doorvragen en draagvlak opbouwen. Op dat doel ben je gegroeid, maar je houdt het staan als een bewuste gewoonte, niet meer als zwakte." },
+          { s: "N", t: "Welke leerdoelen scherp je aan?" },
+          { s: "M", t: "Doorvragen en schakelen wil je afmaken door de geplande interviews met verpleegkundigen alsnog te doen. Zelfstandige analyse beschouw je als grotendeels behaald; de volgende stap is een groter of complexer project." },
+          { s: "N", t: "En de beoordeling zelf?" },
+          { s: "M", t: "Op het eindevaluatieformulier scoor je ruim voldoende op alle vier de onderdelen: meewerken, beroepsvaardigheden, beroepshouding en reflectie. Genoemd worden je planmatige werken, actief luisteren en eigen initiatief." },
+          { s: "N", t: "En je toekomst?" },
+          { s: "M", t: "Je denkt aan een rol als procesadviseur, organisatieadviseur of projectmedewerker. Volgend jaar volg je het semester Organiseren voor de Toekomst en de minor Veranderen van Organisaties. Dat past bij je richting: verandermanagement, omgaan met weerstand en sterkere datavaardigheden." }
+        ]
+      },
+      {
+        titel: "14 · Methoden en modellen op een rij",
+        regels: [
+          { s: "N", t: "Even een snelle recap van al je methoden, want assessoren vragen daar graag naar. Ik noem een model, jij zegt waarvoor het diende. De A3-methode?" },
+          { s: "M", t: "Mijn leidende structuur voor het verbetertraject: zeven stappen, van probleem en huidige situatie naar doel en maatregelen." },
+          { s: "N", t: "De vijf-keer-waarom?" },
+          { s: "M", t: "Om door te vragen naar de grondoorzaak. Die eindigde bij het ontbrekende functieprofiel voor een verzorgende." },
+          { s: "N", t: "De Gemba walk?" },
+          { s: "M", t: "Meelopen op de afdeling om het echte proces te zien en mijn aannames aan de praktijk te toetsen." },
+          { s: "N", t: "De PICK-matrix?" },
+          { s: "M", t: "Verbeterpunten prioriteren op impact tegenover inspanning, bij het OK-leeninstrumentarium." },
+          { s: "N", t: "Gestructureerde observatie?" },
+          { s: "M", t: "Mijn onderzoeksmethode, zodat de data direct uit de praktijk kwam, gecodeerd op zorgtype, risico en bevoegdheid." },
+          { s: "N", t: "DESTEP, het 7S-model en SWOT?" },
+          { s: "M", t: "Mijn organisatieanalyse: DESTEP voor de externe omgeving, 7S voor de interne organisatie, samengebracht in een SWOT." },
+          { s: "N", t: "Het Value Proposition Canvas en Kotter?" },
+          { s: "M", t: "Voor de AFAS-haalbaarheidsstudie: het canvas voor de waarde, de acht stappen van Kotter voor de verandering." },
+          { s: "N", t: "Het kleurenmodel van De Caluwé en Vermaak?" },
+          { s: "M", t: "Voor mijn verandermanagement-analyse: blauw versus groen, waarbij de cultuuromslag het grootste aandachtspunt is." },
+          { s: "N", t: "En tot slot de KATA-methode?" },
+          { s: "M", t: "Een vaste routine voor de wekelijkse evaluatie, om stap voor stap te blijven verbeteren. Als je deze rij kent, sta je stevig." }
+        ]
+      },
+      {
+        titel: "15 · De financiële kant: KSF's en KPI's",
+        regels: [
+          { s: "N", t: "Voor de opdracht financiële data-analist keek je naar de sturing van het OZG. Wat zijn kritische succesfactoren?" },
+          { s: "M", t: "Een KSF is een factor waarop een organisatie goed moet presteren om haar strategie te realiseren. Een KPI is een meetbare indicator die laat zien in hoeverre je die KSF haalt." },
+          { s: "N", t: "Welke drie KSF's benoemde de raad van bestuur?" },
+          { s: "M", t: "Financieel duurzaam herstel, met een EBITDA van rond de zeven procent; productiviteitsverbetering, met een groei van twee procent als doel voor 2026; en de stap van reactief naar proactief, met continu verbeteren als werkwijze." },
+          { s: "N", t: "En jouw bureau, hoe draagt dat bij?" },
+          { s: "M", t: "Indirect. Het bureau realiseert zelf geen zorgproductie, maar faciliteert afdelingen die dat wel doen. De KPI's zijn dus vooral projectmatig: projectvoortgang, plus outcome-indicatoren als de ligduur op 3A en 3B en de OK-benutting." },
+          { s: "N", t: "Hoe wordt daarop gestuurd?" },
+          { s: "M", t: "Via de PDSA-cyclus: plan, do, study, act. Plus verbeterborden, dagstarts en maandelijkse resultaatgesprekken op drie niveaus. Eén eerlijke nuance: kwaliteit op orde is voor het bureau het minst concreet meetbaar." },
+          { s: "N", t: "Mooi, dat verbindt jouw werk direct met de strategie en het herstelplan van het ziekenhuis." }
+        ]
+      },
+      {
+        titel: "16 · Lastige vragen en hoe je ze pakt",
+        regels: [
+          { s: "N", t: "Laten we wat lastige vragen oefenen. Eerste: wat was nou precies jouw aandeel, en wat deed Joanne?" },
+          { s: "M", t: "Ik droeg de analyse en het onderzoek: het A3-traject, de zesentwintig observaties, de tweehonderdvijftien handelingen en het verbetervoorstel. Joanne dacht mee, stemde af over scope en haalbaarheid, en samen bepaalden we de framing. Wees daar concreet over." },
+          { s: "N", t: "Tweede: hoe zeker ben je van die negen procent? Je codeerde toch alleen?" },
+          { s: "M", t: "Eerlijk: ik was de enige codeur, dus geen tweede beoordelaar. Maar ik codeerde tegen de formele functiebeschrijvingen, niet op gevoel, en de verpleegkundige blijft achterwacht met een escalatieprotocol. Dus zelfs bij ruis blijft het veilig." },
+          { s: "N", t: "Derde: een verpleegkundige zegt: jij bezuinigt op zorgkwaliteit. Hoe reageer je?" },
+          { s: "M", t: "Ik leg uit dat de zorg voor deze groep grotendeels laagcomplex is, dat een verpleegkundige beschikbaar blijft, en dat het juist gaat om de juiste medewerker op de juiste taak. De kwaliteit blijft geborgd, dat is een harde randvoorwaarde." },
+          { s: "N", t: "Vierde: wat is er nou echt innovatief aan clustering?" },
+          { s: "M", t: "Ik geef toe dat het concept niet uniek is. De innovatie zit in de toepassing voor deze afdeling: de combinatie van clustering, hybride inzet, escalatiecriteria, data-onderbouwing en de medezeggenschapsroute." },
+          { s: "N", t: "En vijf: je gebruikte AI voor je bronnenlijst. Hoe borg je dat het werk van jou is?" },
+          { s: "M", t: "Ik gebruikte AI alleen voor de vorm, zoals het opmaken van bronnen, en heb dat gecontroleerd. De observaties, de analyse, het voorstel en de reflecties zijn van mij. Transparant zijn en je eigen oordeel houden, dat is de kern." }
+        ]
+      },
+      {
+        titel: "17 · Slottips voor je CGI",
+        regels: [
+          { s: "N", t: "Tot slot, Mees, geef Mika je beste tips voor het gesprek zelf." },
+          { s: "M", t: "Eén: antwoord in STARR, en leg de nadruk op je Actie en je Reflectie. Twee: wees concreet met één duidelijk voorbeeld, en zeg ik deed, niet je doet meestal." },
+          { s: "N", t: "Drie?" },
+          { s: "M", t: "Claim je eigenaarschap: maak duidelijk wat jij deed en wat Joanne of P&O deden. Vier: bij een kritische vraag, geef de assessor gelijk waar dat terecht is, benoem de grens eerlijk, en laat zien hoe je het mitigeerde." },
+          { s: "N", t: "En als je iets niet zeker weet?" },
+          { s: "M", t: "Zeg dat eerlijk, en vertel hoe je het zou uitzoeken. Dat is sterker dan bluffen. En neem rustig de tijd; even denken mag." },
+          { s: "N", t: "Ken je cijfers, koppel terug aan je POP, en verwijs naar je bijlagen als bewijs. Dan sta je sterk." },
+          { s: "M", t: "Precies. Je hebt een echt vraagstuk van begin tot bijna eind opgepakt. Vertel dat met vertrouwen. Succes met je CGI." },
+          { s: "N", t: "Bedankt voor het luisteren, en heel veel succes." }
+        ]
+      }
+    ]
+  },
+
+  /* ------------------------------------------------------------------
      Algemene CGI-tips
   ------------------------------------------------------------------ */
   cgiTips: [

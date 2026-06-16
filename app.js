@@ -316,6 +316,7 @@
   function showView(name) {
     stopSpeaking();
     stopAllCapture();
+    if (typeof podPlaying !== "undefined" && podPlaying && name !== "podcast") podStop();
     $$(".view").forEach(v => v.classList.add("is-hidden"));
     const view = $("#view-" + name);
     if (view) view.classList.remove("is-hidden");
@@ -323,6 +324,7 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (name === "flashcards") renderFlashcards();
     if (name === "meerkeuze") renderMeerkeuze();
+    if (name === "podcast") renderPodcast();
     if (name === "spiekbriefje") renderFacts();
     if (name === "voortgang") renderVoortgang();
     if (name === "beoordeling") renderBeoordeling();
@@ -762,6 +764,147 @@
     });
     $("#mcRetry").addEventListener("click", renderMeerkeuze);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  /* ===================================================================
+     PODCAST (audio-samenvatting via TTS, twee stemmen)
+  =================================================================== */
+  let podPlaying = false;
+  let podChap = 0;
+  let podLine = 0;
+  let podRate = 1;
+  let podBuilt = false;
+
+  function podVoiceFor(speaker) {
+    const voices = (synth && synth.getVoices()) || [];
+    const nl = voices.filter(v => /^nl/i.test(v.lang));
+    if (speaker === "N") return nl[0] || pickDutchVoice() || null;
+    return nl[1] || nl[0] || pickDutchVoice() || null; // tweede stem indien beschikbaar
+  }
+
+  function renderPodcast() {
+    const pod = DATA.podcast;
+    $("#podTitel").textContent = pod.titel;
+    // schatting totale duur (~150 woorden/min)
+    let words = 0;
+    pod.hoofdstukken.forEach(h => h.regels.forEach(r => { words += r.t.split(/\s+/).length; }));
+    const mins = Math.round(words / 135); // Nederlandse TTS ~135 woorden/min, plus pauzes tussen regels
+    $("#podIntro").textContent = pod.intro + " Geschatte duur: ongeveer " + mins + " minuten.";
+
+    if (!podBuilt) {
+      const chaps = $("#podChapters");
+      chaps.innerHTML = "<div class='pod-chapters-h'>Hoofdstukken</div>";
+      pod.hoofdstukken.forEach((h, i) => {
+        const b = el("button", "pod-chap");
+        b.textContent = h.titel;
+        b.addEventListener("click", () => { podJumpTo(i); });
+        chaps.appendChild(b);
+      });
+      podBuilt = true;
+    }
+    renderPodTranscript();
+    podHighlight();
+    podUpdateUi();
+    if (!synth) $("#podStatus").textContent = "Let op: voorlezen wordt niet ondersteund in deze browser. Het transcript kun je wel lezen.";
+  }
+
+  function renderPodTranscript() {
+    const wrap = $("#podTranscript");
+    wrap.innerHTML = "";
+    const pod = DATA.podcast;
+    pod.hoofdstukken.forEach((h, ci) => {
+      const sec = el("div", "pod-sec");
+      sec.id = "pod-sec-" + ci;
+      sec.appendChild(el("h3", "pod-sec-title", esc(h.titel)));
+      h.regels.forEach((r, li) => {
+        const line = el("div", "pod-line");
+        line.id = "pod-line-" + ci + "-" + li;
+        const naam = DATA.podcast.sprekers[r.s] || r.s;
+        line.innerHTML = '<span class="pod-spk pod-spk-' + r.s + '">' + esc(naam) + '</span>' +
+                         '<span class="pod-txt">' + esc(r.t) + '</span>';
+        line.addEventListener("click", () => { podChap = ci; podLine = li; podHighlight(); if (podPlaying) { stopSpeaking(); podSpeakCurrent(); } });
+        sec.appendChild(line);
+      });
+      wrap.appendChild(sec);
+    });
+  }
+
+  function podCurrentLine() {
+    const h = DATA.podcast.hoofdstukken[podChap];
+    return h ? h.regels[podLine] : null;
+  }
+
+  function podSpeakCurrent() {
+    if (!synth) return;
+    const r = podCurrentLine();
+    if (!r) { podStop(); return; }
+    podHighlight();
+    const u = new SpeechSynthesisUtterance(r.t);
+    u.lang = "nl-NL";
+    const v = podVoiceFor(r.s);
+    if (v) u.voice = v;
+    u.rate = podRate;
+    u.pitch = r.s === "N" ? 1.06 : 0.94; // licht verschil zodat de twee stemmen herkenbaar zijn
+    u.onend = () => { if (podPlaying) podAdvance(); };
+    synth.speak(u);
+  }
+
+  function podAdvance() {
+    const pod = DATA.podcast;
+    const h = pod.hoofdstukken[podChap];
+    if (podLine < h.regels.length - 1) { podLine++; }
+    else if (podChap < pod.hoofdstukken.length - 1) { podChap++; podLine = 0; }
+    else { podStop(); $("#podStatus").textContent = "Einde van de podcast. Mooi gedaan!"; return; }
+    podSpeakCurrent();
+  }
+
+  function podPlay() {
+    if (!synth) return;
+    podPlaying = true;
+    stopSpeaking();
+    podSpeakCurrent();
+    podUpdateUi();
+  }
+  function podPause() {
+    podPlaying = false;
+    stopSpeaking();
+    podUpdateUi();
+    $("#podStatus").textContent = "Gepauzeerd.";
+  }
+  function podStop() {
+    podPlaying = false;
+    stopSpeaking();
+    podUpdateUi();
+  }
+  function podToggle() { if (podPlaying) podPause(); else podPlay(); }
+
+  function podJumpTo(ci) {
+    podChap = ci; podLine = 0;
+    podHighlight();
+    const sec = $("#pod-sec-" + ci);
+    if (sec && sec.scrollIntoView) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (podPlaying) { stopSpeaking(); podSpeakCurrent(); }
+  }
+  function podNextChap() { if (podChap < DATA.podcast.hoofdstukken.length - 1) podJumpTo(podChap + 1); }
+  function podPrevChap() { if (podChap > 0) podJumpTo(podChap - 1); }
+
+  function podHighlight() {
+    $$(".pod-line.is-current").forEach(e => e.classList.remove("is-current"));
+    $$(".pod-chap.is-current").forEach(e => e.classList.remove("is-current"));
+    const line = $("#pod-line-" + podChap + "-" + podLine);
+    if (line) {
+      line.classList.add("is-current");
+      if (podPlaying && line.scrollIntoView) line.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    const chaps = $$("#podChapters .pod-chap");
+    if (chaps[podChap]) chaps[podChap].classList.add("is-current");
+    const h = DATA.podcast.hoofdstukken[podChap];
+    if (h) $("#podNowTitle").textContent = h.titel;
+  }
+
+  function podUpdateUi() {
+    const btn = $("#podPlay");
+    if (btn) btn.textContent = podPlaying ? "⏸ Pauze" : "▶ Afspelen";
   }
 
   /* ===================================================================
@@ -1392,6 +1535,15 @@
     $("#mcShuffle").addEventListener("click", () => { mcDeck = shuffle(mcDeck); mcIdx = 0; mcScore = 0; mcDone = 0; mcWrong = []; showMcQuestion(); });
     $("#mcRestart").addEventListener("click", renderMeerkeuze);
     $("#mcNext").addEventListener("click", mcNext);
+
+    // podcast
+    $("#podPlay").addEventListener("click", podToggle);
+    $("#podNext").addEventListener("click", podNextChap);
+    $("#podPrev").addEventListener("click", podPrevChap);
+    $("#podRate").addEventListener("change", () => {
+      podRate = parseFloat($("#podRate").value) || 1;
+      if (podPlaying) { stopSpeaking(); podSpeakCurrent(); }
+    });
 
     $("#btnPdf").addEventListener("click", downloadPdf);
     $("#btnStartSim").addEventListener("click", startSim);
